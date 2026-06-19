@@ -1,0 +1,23 @@
+[
+    {
+        "map": "Grassland",
+        "x": 20,
+        "y": 20,
+        "width": 2,
+        "height": 2,
+        "targetMap": "world",
+        "targetX": 10,
+        "targetY": 10
+    },
+
+    {
+        "map": "world",
+        "x": 5,
+        "y": 5,
+        "width": 2,
+        "height": 2,
+        "targetMap": "Grassland",
+        "targetX": 25,
+        "targetY": 25
+    }
+]

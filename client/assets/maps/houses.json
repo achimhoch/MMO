@@ -1,0 +1,21 @@
+[
+    {
+        "id" : 1,
+        "map": "Grassland",
+        "x": 40,
+        "y": 40,
+        "width": 4,
+        "height": 4,
+        "owner": null
+    },
+
+    {
+        "id" : 2,
+        "map": "town",
+        "x": 12,
+        "y": 18,
+        "width": 3,
+        "height": 3,
+        "owner": "NPC_Mayor"
+    }
+]
