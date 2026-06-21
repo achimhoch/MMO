@@ -28,30 +28,20 @@ class SocketServer {
             console.log("Spieler " + socket.id + " verbunden");
             const player = new Player(socket.id, socket);
             players.set(player.id, player);
-            player.x = 0;
-            player.y = 0;
-            player.chunkX = 0;
-            player.chunkY = 0;
-            const startAOI = AOIManager.getAOI(player.chunkX, player.chunkY);
-            player.aoiX = startAOI.x;
-            player.aoiY = startAOI.y;
-            const room = AOIManager.roomName(player.aoiX, player.aoiY);
-            socket.join(room);
-            socket.emit("init", {
-                id: player.id,
-                x: player.x,
-                y: player.y
-            });
-            sendInitialChunks(player, chunkManager);
+            const aoi = AOIManager.getAOI(0, 0);
+            player.aoiX = aoi.x;
+            player.aoiY = aoi.y;
+            socket.join(AOIManager.roomName(player.aoiX, player.aoiY));
+            socket.emit("init", player.getData());
 
             socket.on("input", (input) => {
-                //player.input = input;
-                player.input = {
+                player.input = input;
+                /*player.input = {
                     left: !!input.left,
                     right: !!input.right,
                     up: !!input.up,
                     down: !!input.down
-                };
+                };*/
             });
 
             /*socket.on("move", (data) => {
@@ -85,7 +75,6 @@ class SocketServer {
 
         socket.on(
             "disconnect", () => {
-                leaveAOI(socket, player.aoiX, player.aoiY, AOIManager);
                 players.delete(player.id);
                 this.io.emit("playerLeft", player.id);
                 console.log("Spieler " + socket.id + " getrennt");
