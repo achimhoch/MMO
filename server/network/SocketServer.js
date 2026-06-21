@@ -28,10 +28,7 @@ class SocketServer {
             console.log("Spieler " + socket.id + " verbunden");
             const player = new Player(socket.id, socket);
             players.set(player.id, player);
-            const aoi = AOIManager.getAOI(0, 0);
-            player.aoiX = aoi.x;
-            player.aoiY = aoi.y;
-            socket.join(AOIManager.roomName(player.aoiX, player.aoiY));
+            socket.join(AOIManager.roomName(0, 0));
             socket.emit("init", player.getData());
 
             socket.on("input", (input) => {
@@ -69,6 +66,10 @@ class SocketServer {
                         aoiY: player.aoiY
                     });
                 }
+
+                const aoi = AOIManager.getAOI(0, 0);
+                player.aoiX = aoi.x;
+                player.aoiY = aoi.y;
 
                 this.io.to(AOIManager.roomName(player.aoiX, player.aoiY)).emit("playerMove", {id: player.id, x: player.x, y: player.y});
             });*/

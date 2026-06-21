@@ -14,6 +14,7 @@ class Player {
             up:false,
             down:false
         };
+        this.loadedChunks = new Set();
     }
 
     move(data){

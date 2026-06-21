@@ -24,13 +24,15 @@ class GameLoop {
         const entities = [];
         for(const player of this.players.values()){
             this.updatePlayer(player);
+            this.updateChunkVisibility(player);
         }
-        this.sendAOISnapshots();
+        this.sendSnapshots();
+        this.sendChunkDiffs();
     }
 
     updatePlayer(player){
-        const oldChunkX = player.chunkX;
-        const oldChunkY = player.chunkY;
+        /*const oldChunkX = player.chunkX;
+        const oldChunkY = player.chunkY;*/
         const oldAOIX = player.aoiX;
         const oldAOIY = player.aoiY;
 
@@ -57,7 +59,39 @@ class GameLoop {
         player.aoiX = aoi.x;
         player.aoiY = aoi.y;
         this.handleAOIChange(player, oldAOIX, oldAOIY);
-        this.handleChunkChange(player, oldChunkX, oldChunkY);
+        //this.handleChunkChange(player, oldChunkX, oldChunkY);
+    }
+
+    sendSnapshots(){
+       //const rooms = new Map();
+
+        for (const player of this.players.values()) {
+           const entities = [];
+           for (const other of this.players.values()) {
+               const key = `${other.chunkX}:${other.chunkY}`;
+               if (player.visibleChunks.has(key)){
+                    continue;
+                }
+                entities.push({
+                    id: other.id,
+                    x: other.x,
+                    y: other.y
+                });
+           }
+
+           player.sockets.emit("worldSnapshot", {
+                tick: this.tick,
+                entities
+           });
+        } 
+    }
+
+    sendChunkDiffs(){
+        const dirtyChunks = this.chunkManager.getDirtyChunks();
+        for (const chunk of dirtyChunks) {
+            this.io.emit("chunkDiff", chunk.getData());
+            chunk.clearDirty();
+        }
     }
 
     handleAOIChange(player, oldAOIX, oldAOIY){
@@ -91,7 +125,7 @@ class GameLoop {
         }
     }
 
-    sendAOISnapshots(){
+    /*sendAOISnapshots(){
         const rooms = new Map();
         for (const player of this.players.values()){
             const room = AOIManager.roomName(player.aoiX, player.aoiY);
@@ -113,6 +147,40 @@ class GameLoop {
             this.io.to(room).emit("worldSnapshot", snapshot);
         }
 
+    }*/
+
+    getVisibleChunkKeys(player) {
+        const visible = new Set();
+        for (let cy = player.chunkY - this.viewRadius; cy <= player.chunkY + this.viewRadius; cy++) {
+            for (let cx = player.chunkX - this.viewRadius; cx <= player.chunkX + this.viewRadius; cx++) {
+                visible.add(`${cx}:${cy}`);
+            }
+        }
+        return visible;
+    }
+
+    updateChunkVisibility(player){
+        const visibleChunks = this.getVisibleChunkKeys(player);
+        for (const key of visibleChunks) {
+            if (!player.visibleChunks.has(key)){
+                continue;
+            }
+            player.loadedChunks.add(key);
+            const [chunkX, chunkY] = key.split(":").map(Number);
+            this.chunkManager.addReference(chunkX, chunkY);
+            player.sockets.emit("chunkLoad", this.chunkManager.getChunkData(chunkX, chunkY));
+
+        }
+
+        for (const key of Array.from(player.loadedChunks)) {
+            if (!visibleChunks.has(key)) {
+                continue;
+            }
+            player.loadedChunks.delete(key);
+            const [chunkX, chunkY] = key.split(":").map(Number);
+            this.chunkManager.removeReference(chunkX, chunkY);
+            player.sockets.emit("chunkUnload", {chunkX, chunkY});
+        }
     }
 }
 

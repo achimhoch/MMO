@@ -1,15 +1,45 @@
 class Chunk {
 
-    constructor(x, y, tiles){
+    constructor(x, y){
 
         this.x = x;
         this.y = y;
-        this.tiles = tiles;
-        this.entities = new Map();
-        this.dirtyTiles = new Set();
+        this.layers = {
+            ground: [],
+            objects: [],
+            collision: []
+        };
+        this.dirty = false;
+        this.refCount = 0;
     }
 
-    setTile(index, value){
+    addReference(){
+        this.refCount++;
+    }
+
+    removeReference(){
+        this.refCount--;
+        if (this.refCount <= 0){
+            this.refCount = 0;
+        }
+    }
+
+    hasReferences(){
+        return this.refCount > 0;
+    }
+
+
+    markDirty(){
+
+        this.dirty = true;
+    }
+    
+    clearDirty(){
+
+        this.dirty = false;
+    }
+
+    /*setTile(index, value){
 
         this.tiles[index] = value;
         this.dirtyTiles.add(index);
@@ -27,14 +57,14 @@ class Chunk {
         this.dirtyTiles.clear();
 
         return diff;
-    }
+    }*/
 
     getData(){
 
         return {
             x: this.x,
             y: this.y,
-            tiles: this.tiles
+            tiles: this.layers  
         };
     }
 }
