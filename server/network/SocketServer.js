@@ -3,8 +3,9 @@ const { Server } = require("socket.io");
 const Player = require("../entitiy/Player");
 const ChunkManager = require("../manager/ChunkManager");
 const AOIManager = require("../manager/AOIManager");
+const GameLoop = require("../manager/GameLoop");
 
-const { streamChunks, getChunkCoords, joinAOI, leaveAOI} = require("../functions/serverFunctions");
+const { streamChunks, getChunkCoords, joinAOI, leaveAOI, sendInitialChunks} = require("../functions/serverFunctions");
 
 const players = new Map();
 const chunkManager = new ChunkManager();
@@ -25,24 +26,35 @@ class SocketServer {
 
         this.io.on("connection", (socket) => {
             console.log("Spieler " + socket.id + " verbunden");
-            const player = new Player(socket.id);
+            const player = new Player(socket.id, socket);
             players.set(player.id, player);
-            socket.emit("init", player.getData());
-            const startChunk = getChunkCoords(player.x, player.y);
-            player.chunkX = startChunk.x;
-            player.chunkY = startChunk.y;
-            const startAOI = AOIManager.getAOI(startChunk.x, startChunk.y);
+            player.x = 0;
+            player.y = 0;
+            player.chunkX = 0;
+            player.chunkY = 0;
+            const startAOI = AOIManager.getAOI(player.chunkX, player.chunkY);
             player.aoiX = startAOI.x;
             player.aoiY = startAOI.y;
-            joinAOI(socket, player.aoiX, player.aoiY, AOIManager);
-            socket.emit("init", player.getData());
-            streamChunks(socket, player.chunkX, player.chunkY, chunkManager);
+            const room = AOIManager.roomName(player.aoiX, player.aoiY);
+            socket.join(room);
+            socket.emit("init", {
+                id: player.id,
+                x: player.x,
+                y: player.y
+            });
+            sendInitialChunks(player, chunkManager);
 
-            /*socket.on("input", (input) => {
-                player.input = input;
-            });*/
+            socket.on("input", (input) => {
+                //player.input = input;
+                player.input = {
+                    left: !!input.left,
+                    right: !!input.right,
+                    up: !!input.up,
+                    down: !!input.down
+                };
+            });
 
-            socket.on("move", (data) => {
+            /*socket.on("move", (data) => {
                  player.move(data);
                 const oldChunkX = player.chunkX;
                 const oldChunkY = player.chunkY;
@@ -69,7 +81,7 @@ class SocketServer {
                 }
 
                 this.io.to(AOIManager.roomName(player.aoiX, player.aoiY)).emit("playerMove", {id: player.id, x: player.x, y: player.y});
-            });
+            });*/
 
         socket.on(
             "disconnect", () => {
@@ -81,6 +93,9 @@ class SocketServer {
         );
             
         });
+
+        const gameLoop = new GameLoop(this.io, players, chunkManager);
+        gameLoop.start();
     }
 
     

@@ -27,9 +27,22 @@ function leaveAOI(socket, aoiX, aoiY, AOIManager) {
     );
 }
 
+function sendInitialChunks(player, chunkManager){
+
+    const VIEW_RADIUS = 1;
+
+    for(let cy = player.chunkY - VIEW_RADIUS; cy <= player.chunkY + VIEW_RADIUS; cy++){
+        for(let cx = player.chunkX - VIEW_RADIUS; cx <= player.chunkX + VIEW_RADIUS; cx++){
+            const chunk = chunkManager.getChunk(cx, cy);
+            player.socket.emit("chunkData", chunk.getData());
+        }
+    }
+}
+
  module.exports = {
     getChunkCoords,
     streamChunks,
     joinAOI,
-    leaveAOI
+    leaveAOI,
+    sendInitialChunks
  }

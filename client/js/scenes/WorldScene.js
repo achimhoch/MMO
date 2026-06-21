@@ -21,7 +21,7 @@ export default class WorldScene extends Phaser.Scene {
         this.entityManager = new EntityManager(this);
         this.network = new NetworkManager(this);
         this.network.connect();
-        this.cursors = this.input.keyboard.createCursorKeys();
+        this.cursors = this.input.keyboard.createCursorKeys(); 
         this.cameras.main.setZoom(1.5);
         this.currentChunkX = 0;
         this.currentChunkY = 0;

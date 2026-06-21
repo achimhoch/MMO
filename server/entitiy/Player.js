@@ -8,6 +8,12 @@ class Player {
         this.chunkY = 0;
         this.aoiX = 0;
         this.aoiY = 0;
+        this.input = {
+            left:false,
+            right:false,
+            up:false,
+            down:false
+        };
     }
 
     move(data){
