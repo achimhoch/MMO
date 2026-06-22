@@ -15,6 +15,7 @@ class Player {
             down:false
         };
         this.loadedChunks = new Set();
+        this.visibleEntities = new Set();
     }
 
     move(data){

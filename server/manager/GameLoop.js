@@ -182,6 +182,10 @@ class GameLoop {
             player.sockets.emit("chunkUnload", {chunkX, chunkY});
         }
     }
+
+    getVisibleEntities(player) {
+        
+    }
 }
 
 module.exports = GameLoop;
