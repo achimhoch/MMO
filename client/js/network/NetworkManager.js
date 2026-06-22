@@ -11,7 +11,7 @@ export default class NetworkManager {
 
         this.socket.on("init", (data) => {
             this.playerId = data.id;
-            this.scene.entityManager.spawnPlayer(data);
+            this.scene.entityManager.spawnPlayer(data); 
         });
 
         /*this.socket.on("playerMove", (data) => {
