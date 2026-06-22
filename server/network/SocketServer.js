@@ -4,11 +4,13 @@ const Player = require("../entity/Player");
 const ChunkManager = require("../manager/ChunkManager");
 const AOIManager = require("../manager/AOIManager");
 const GameLoop = require("../manager/GameLoop");
+const TiledChunkManager = require("../manager/TiledChunkManager");
 
 const { streamChunks, getChunkCoords, joinAOI, leaveAOI, sendInitialChunks} = require("../functions/serverFunctions"); 
 
 const players = new Map();
-const chunkManager = new ChunkManager();
+const tiledChunkManager = new TiledChunkManager();
+const chunkManager = new ChunkManager(tiledChunkManager);
 const CHUNK_SIZE = 16;
 const VIEW_RADIUS = 1;
 
@@ -32,7 +34,7 @@ class SocketServer {
             player.y = 0;
             player.chunkX = 0;
             player.chunkY = 0;
-            constaoi = AOIManager.getAOI(player.chunkX, player.chunkY);
+            const aoi = AOIManager.getAOI(player.chunkX, player.chunkY); 
             player.aoiX = aoi.x;
             player.aoiY = aoi.y;
             socket.join(AOIManager.roomName(player.aoiX, player.aoiY));

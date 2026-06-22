@@ -162,7 +162,7 @@ class GameLoop {
     updateChunkVisibility(player){
         const visibleChunks = this.getVisibleChunkKeys(player);
         for (const key of visibleChunks) {
-            if (!player.visibleChunks.has(key)){
+            if (player.loadedChunks.has(key)){
                 continue;
             }
             player.loadedChunks.add(key);

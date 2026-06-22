@@ -30,7 +30,7 @@ class ChunkManager {
     }
 
     createChunk(chunkX, chunkY){
-        const chunk = new Chunk(chunkX, chunkY);
+        const chunk = new Chunk(chunkX, chunkY); 
         const tiledChunk = this.tiledChunkManager.loadChunk(chunkX, chunkY);
         chunk.layers.ground = tiledChunk.layers.ground;
         chunk.layers.object = tiledChunk.layers.object;

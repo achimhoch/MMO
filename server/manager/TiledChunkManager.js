@@ -1,10 +1,11 @@
 const fs = require("fs");
+//const Test = require("../../client/assets/maps/continents/grassland.json")
 
 class TiledChunkManager {
 
     constructor() {
 
-        this.map =JSON.parse(fs.readFileSync("../../client/assets/maps/continents/grassland.json", "utf8"));
+        this.map = JSON.parse(fs.readFileSync("../../client/assets/maps/continents/grassland.json", "utf8"));
     }
 
     loadChunk(chunkX, chunkY) {
