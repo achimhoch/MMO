@@ -30,10 +30,19 @@ export default class NetworkManager {
             }
         );
 
-        this.socket.on("worldSnapshot", (snapshot) => {
-            snapshot.forEach((entity) => {
+        this.socket.on("entityDelta", (delta) => {
+           delta.added.forEach((entity) => {
+                this.scene.entityManager.spawnPlayer(entity);
+           });
+
+           delta.updated.forEach((entity) => {
                 this.scene.entityManager.updatePlayer(entity);
-            });
+           });
+
+           delta.removed.forEach((id) => {
+                this.scene.entityManager.removePlayer(id)
+           });
+            
         });
         
         

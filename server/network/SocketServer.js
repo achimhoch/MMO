@@ -5,7 +5,7 @@ const ChunkManager = require("../manager/ChunkManager");
 const AOIManager = require("../manager/AOIManager");
 const GameLoop = require("../manager/GameLoop");
 
-const { streamChunks, getChunkCoords, joinAOI, leaveAOI, sendInitialChunks} = require("../functions/serverFunctions");
+const { streamChunks, getChunkCoords, joinAOI, leaveAOI, sendInitialChunks} = require("../functions/serverFunctions"); 
 
 const players = new Map();
 const chunkManager = new ChunkManager();
@@ -28,17 +28,28 @@ class SocketServer {
             console.log("Spieler " + socket.id + " verbunden");
             const player = new Player(socket.id, socket);
             players.set(player.id, player);
-            socket.join(AOIManager.roomName(0, 0));
-            socket.emit("init", player.getData());
+            player.x = 0;
+            player.y = 0;
+            player.chunkX = 0;
+            player.chunkY = 0;
+            constaoi = AOIManager.getAOI(player.chunkX, player.chunkY);
+            player.aoiX = aoi.x;
+            player.aoiY = aoi.y;
+            socket.join(AOIManager.roomName(player.aoiX, player.aoiY));
+            socket.emit("init", {
+                id: player.id,
+                x: player.x,
+                y: player.y
+            });
 
             socket.on("input", (input) => {
-                player.input = input;
-                /*player.input = {
+                //player.input = input;
+                player.input = {
                     left: !!input.left,
                     right: !!input.right,
                     up: !!input.up,
                     down: !!input.down
-                };*/
+                };
             });
 
             /*socket.on("move", (data) => {
@@ -76,8 +87,14 @@ class SocketServer {
 
         socket.on(
             "disconnect", () => {
-                players.delete(player.id);
-                this.io.emit("playerLeft", player.id);
+                /*players.delete(player.id);
+                this.io.emit("playerLeft", player.id);*/
+                socket.leave(AOIManager.roomName(player.aoiX, player.aoiY));
+                for (const key of player.loadedChunks) {
+                    const [ chunkX, chunkY ] = key.split(":").map(Number);
+                    chunkManager.removeReference(chunkX, chunkY);
+                }
+                players.delete(player.id)
                 console.log("Spieler " + socket.id + " getrennt");
             }
         );

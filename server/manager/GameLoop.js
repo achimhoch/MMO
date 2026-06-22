@@ -26,7 +26,7 @@ class GameLoop {
             this.updatePlayer(player);
             this.updateChunkVisibility(player);
         }
-        this.sendSnapshots();
+        this.sendEntityDeltas();
         this.sendChunkDiffs();
     }
 
@@ -184,7 +184,68 @@ class GameLoop {
     }
 
     getVisibleEntities(player) {
-        
+        const visible = [];
+        for (const other of this.players.values()) {
+            const key = `${other.chunkX},${other.chunkY}`;
+            if (!player.loadedChunks.has(key)) {
+                continue;
+            }
+            visible.push(other);
+        }
+        return visible;
+    }
+
+    buildDelta(player) {
+        const added = [];
+        const updated = [];
+        const removed = [];
+        const current = new Set();
+        const entities = this.getVisibleEntities(player);
+        //added + updated
+        for (const entity of entities) {
+            current.add(entity.id);
+            if (!player.visibleEntities.has(entity.id)) {
+                added.push({
+                    id: entity.id,
+                    x: entity.x,
+                    y: entity.y
+                });
+            } else {
+                updated.push({
+                    id: entity.id,
+                    x: entity.x,
+                    y: entity.y
+                });
+            }
+        }
+        //removed
+        for (const id of player.visibleEntities) {
+            if (current.has(id)) {
+                continue;
+            }
+
+            removed.push(id);
+        }
+
+        player.getVisibleEntities = current;
+
+        return {
+            tick: this.tick,
+            added,
+            updated,
+            removed
+        };
+    }
+
+    sendEntityDeltas(){
+        for (const player of this.players.values()) {
+            const delta = this.buildDelta(player);
+            if (delta.added.length === 0 && delta.updated.length === 0 && delta.removed.length === 0) {
+                continue;
+            }
+
+            player.socket.emit("entityDelta", delta);
+        }
     }
 }
 
