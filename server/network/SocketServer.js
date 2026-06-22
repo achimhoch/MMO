@@ -1,6 +1,6 @@
 const { Server } = require("socket.io");
 
-const Player = require("../entitiy/Player");
+const Player = require("../entity/Player");
 const ChunkManager = require("../manager/ChunkManager");
 const AOIManager = require("../manager/AOIManager");
 const GameLoop = require("../manager/GameLoop");
