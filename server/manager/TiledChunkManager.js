@@ -5,7 +5,7 @@ class TiledChunkManager {
 
     constructor() {
 
-        this.map = JSON.parse(fs.readFileSync("../../client/assets/maps/continents/grassland.json", "utf8"));
+        this.map = JSON.parse(fs.readFileSync("../../client/assets/maps/continents/grassland.json"));
     }
 
     loadChunk(chunkX, chunkY) {
