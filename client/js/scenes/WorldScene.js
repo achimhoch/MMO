@@ -29,25 +29,13 @@ export default class WorldScene extends Phaser.Scene {
 
     update() {
 
-        if(!this.network.playerId){
-            return;
-        }
-
-        const input = {
-
+        this.network.sendInput({
             left: this.cursors.left.isDown,
             right: this.cursors.right.isDown,
             up: this.cursors.up.isDown,
             down: this.cursors.down.isDown
-        };
-        this.network.sendInput(input);
-        const player = this.entityManager.getPlayer(this.network.playerId);
-        if (!player){ return; }
-        this.cameras.main.centerOn(player.x, player.y);
-
-           
-
-
+        });
+       
     }
 
 }

@@ -5,6 +5,7 @@ export default class BootScene extends Phaser.Scene {
 
     preload() {
        this.load.spritesheet("tiles", "assets/tiles/grassland.png", { frameWidth: 64, frameHeight: 64 }); 
+       this.load.image("player", "assets/images/ball.png");
     }
 
     create() {

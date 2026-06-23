@@ -11,20 +11,21 @@ export default class NetworkManager {
 
         this.socket.on("init", (data) => {
             this.playerId = data.id;
-            this.scene.entityManager.spawnPlayer(data); 
+            //this.scene.entityManager.spawnPlayer(data); 
         });
 
-        /*this.socket.on("playerMove", (data) => {
-            this.scene.entityManager.updatePlayer(data);
-        });*/
-
-        this.socket.on("chunkData", (chunk) => {
-            this.scene.chunkManager.loadChunk(chunk);
+        this.socket.on("chunkLoad", (chunk) => {
+            this.chunkManager.loadChunk(chunk);
         });
 
-        this.socket.on("playerLeft", (id) => {
-            this.scene.entityManager.removePlayer(id);
+        this.socket.on("chunkUnload", (chunk) => {
+            this.chunkManager.unloadChunk(chunk.x, chunk.y);
         });
+
+        this.socket.on("chunkDiff", (chunk) => {
+            this.chunkManager.updateChunk(chunk);
+        });
+        
         this.socket.on("aoiChanged", (data) => {
                 console.log("AOI geändert:", data);
             }
@@ -51,6 +52,6 @@ export default class NetworkManager {
 
     sendInput(input){
 
-        this.socket.emit("input", input);
+        this.socket.emit("input", input); 
     }
 }
