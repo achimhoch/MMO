@@ -16,6 +16,7 @@ export default class NetworkManager {
         });
 
         this.socket.on("chunkLoad", (chunk) => {
+           // console.log(chunk);
             this.scene.chunkManager.loadChunk(chunk);
         });
 

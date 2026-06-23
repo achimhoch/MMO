@@ -27,7 +27,7 @@ class SocketServer {
     setup() {
 
         this.io.on("connection", (socket) => {
-            console.log("Spieler " + socket.id + " verbunden");
+            console.log("Spieler " + socket.id + " verbunden"); 
             const player = new Player(socket.id, socket);
             //console.log(player);
             players.set(player.id, player);

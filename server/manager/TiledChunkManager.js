@@ -53,7 +53,7 @@ class TiledChunkManager {
                 tiles.push(layer[index]);
             }
         }
-
+        //console.log(tiles);
         return tiles;
     }
 }
