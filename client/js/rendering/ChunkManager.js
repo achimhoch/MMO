@@ -5,7 +5,7 @@ export default class ChunkManager {
     constructor(scene){
 
         this.scene = scene;
-        this.renderer = new ChunkManager(scene); 
+        this.renderer = new ChunkRenderer(scene); 
         this.chunks = new Map();
         this.radius = 1;
     }
