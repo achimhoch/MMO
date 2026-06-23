@@ -1,30 +1,24 @@
 import IsoMath from "../util/IsoMath.js";
 
 export default class ChunkRenderer {
+    constructor(scene) {
+        this.scene = scene;
+    }
 
-    static render(scene, chunk){
-
-        const container = scene.add.container();
-
-        chunk.tiles.forEach((tileId, index) =>{
-            const x = index % 16;
-            const y = Math.floor(index / 16);
-            const worldX = chunk.x * 16 + x;
-            const worldY = chunk.y * 16 + y;
-            const iso = IsoMath.worldToIso(worldX, worldY);
-
-            const sprite = scene.add.sprite(
-                iso.x,
-                iso.y,
-                "tiles",
-                tileId
-            );
-
-           sprite.depth = IsoMath.depth(worldX, worldX);
-
-            container.add(sprite);
+    renderChunk(chunk) {
+        const container = this.scene.add.container();
+        const size = 16;
+        chunk.layers.ground.forEach((tile, index) => {
+            if (tile !== 0) {
+                const x = index % size;
+                const y = Math.floor(index / size);
+                const pos = IsoMath.worldToIso(x + 64, y + 32);
+                const sprite = this.scene.add.sprite(pos.x, pos.y, 'tiles', tile - 1);
+                sprite.depth = pos.y;
+                container.add(sprite);
+            }
         });
 
         return container;
-    }
+    }   
 }
