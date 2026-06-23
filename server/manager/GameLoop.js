@@ -79,7 +79,7 @@ class GameLoop {
                 });
            }
 
-           player.sockets.emit("worldSnapshot", {
+           player.socket.emit("worldSnapshot", {
                 tick: this.tick,
                 entities
            });
@@ -101,9 +101,9 @@ class GameLoop {
         }
         const oldRoom = AOIManager.roomName(oldAOIX, oldAOIY);
         const newRoom = AOIManager.roomName(player.aoiX, player.aoiY);
-        player.sockets.leave(oldRoom);
-        player.sockets.join(newRoom);
-        player.sockets.emit("aoiChanged", {
+        player.socket.leave(oldRoom);
+        player.socket.join(newRoom);
+        player.socket.emit("aoiChanged", {
             aoiX: player.aoiX,
             aoiY: player.aoiY
         });
@@ -120,7 +120,7 @@ class GameLoop {
         for(let x = player.chunkX - this.viewRadius; x <= player.chunkX + this.viewRadius; x++) {
             for(let y = player.chunkY - this.viewRadius; y <= player.chunkY + this.viewRadius; y++) {
                 const chunk = this.chunkManager.getChunk(x, y);
-                player.sockets.emit("chunkData", chunk.add());
+                player.socket.emit("chunkData", chunk.add());
             }
         }
     }
@@ -168,7 +168,7 @@ class GameLoop {
             player.loadedChunks.add(key);
             const [chunkX, chunkY] = key.split(":").map(Number);
             this.chunkManager.addReference(chunkX, chunkY);
-            player.sockets.emit("chunkLoad", this.chunkManager.getChunkData(chunkX, chunkY));
+            player.socket.emit("chunkLoad", this.chunkManager.getChunkData(chunkX, chunkY));
 
         }
 
@@ -179,7 +179,7 @@ class GameLoop {
             player.loadedChunks.delete(key);
             const [chunkX, chunkY] = key.split(":").map(Number);
             this.chunkManager.removeReference(chunkX, chunkY);
-            player.sockets.emit("chunkUnload", {chunkX, chunkY});
+            player.socket.emit("chunkUnload", {chunkX, chunkY});
         }
     }
 

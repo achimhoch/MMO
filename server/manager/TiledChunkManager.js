@@ -1,17 +1,19 @@
 const fs = require("fs");
-//const Test = require("../../client/assets/maps/continents/grassland.json");
+const path = require("path");
+//const Test = "../../client/assets/maps/continents/grassland.json";
 
 class TiledChunkManager {
 
     constructor() {
 
         this.chunkSize = 16;
-        this.map = JSON.parse(fs.readFileSync("../../client/assets/maps/continents/grassland2.json"));
+        this.file = path.join(__dirname, "../../client/assets/maps/continents/grassland2.json")
+        this.map = JSON.parse(fs.readFileSync(this.file));
         this.width = this.map.width;
         this.height = this.map.height;
         this.layers = {};
 
-        for (const layer of this.layers) {
+        for (const layer of this.map.layers) {
             this.layers[layer.name] = layer.data
         }
     }
@@ -39,7 +41,7 @@ class TiledChunkManager {
         const startY = chunkY * this.chunkSize;
 
         for (let y = 0; y < this.chunkSize; y++) {
-            for (x = 0; x < this.chunkSize; x++) {
+            for (let x = 0; x < this.chunkSize; x++) {
                 const worldX = startX + x;
                 const worldY = startY + y;
 
