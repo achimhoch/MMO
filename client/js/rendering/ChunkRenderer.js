@@ -6,6 +6,7 @@ export default class ChunkRenderer {
     }
 
     renderChunk(chunk) {
+        //console.log(chunk);
         const container = this.scene.add.container();
         const size = 16;
         chunk.layers.ground.forEach((tile, index) => {

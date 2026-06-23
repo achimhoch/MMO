@@ -23,7 +23,7 @@ export default class ChunkManager {
         this.chunks.set(key, container);
     }
 
-    unloadChunks(x, y) {
+    unloadChunk(x, y) {
         const key = this.key(x, y);
         const container = this.chunks.get(key);
         if(!container) {

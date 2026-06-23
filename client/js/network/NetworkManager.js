@@ -1,3 +1,4 @@
+
 export default class NetworkManager {
 
     constructor(scene) {
@@ -15,15 +16,15 @@ export default class NetworkManager {
         });
 
         this.socket.on("chunkLoad", (chunk) => {
-            this.chunkManager.loadChunk(chunk);
+            this.scene.chunkManager.loadChunk(chunk);
         });
 
         this.socket.on("chunkUnload", (chunk) => {
-            this.chunkManager.unloadChunk(chunk.x, chunk.y);
+            this.scene.chunkManager.unloadChunk(chunk.x, chunk.y);
         });
 
         this.socket.on("chunkDiff", (chunk) => {
-            this.chunkManager.updateChunk(chunk);
+            this.scene.chunkManager.updateChunk(chunk);
         });
         
         this.socket.on("aoiChanged", (data) => {
