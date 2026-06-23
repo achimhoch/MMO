@@ -5,7 +5,7 @@ const Chunk = require("../manager/Chunk");
 class ChunkManager {
 
     constructor(tiledChunkManager) {
-        this.tiledChunkManager = tiledChunkManager;
+        this.tiledChunkManager = tiledChunkManager; 
         this.chunks = new Map();
         //this.chunkSize = 16;
         //this.importer = new TiledImporter("../../client/assets/maps/continents/grassland.json");
@@ -32,9 +32,11 @@ class ChunkManager {
     createChunk(chunkX, chunkY){
         const chunk = new Chunk(chunkX, chunkY); 
         const tiledChunk = this.tiledChunkManager.loadChunk(chunkX, chunkY);
+        //console.log(tiledChunk);
         chunk.layers.ground = tiledChunk.layers.ground;
         chunk.layers.object = tiledChunk.layers.object;
         chunk.layers.collision = tiledChunk.layers.collision;
+        //console.log(chunk);
         return chunk;
     }
 

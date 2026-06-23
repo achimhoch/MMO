@@ -62,7 +62,7 @@ class GameLoop {
         //this.handleChunkChange(player, oldChunkX, oldChunkY);
     }
 
-    sendSnapshots(){
+    /*sendSnapshots(){
        //const rooms = new Map();
 
         for (const player of this.players.values()) {
@@ -84,7 +84,7 @@ class GameLoop {
                 entities
            });
         } 
-    }
+    }*/
 
     sendChunkDiffs(){
         const dirtyChunks = this.chunkManager.getDirtyChunks();
@@ -108,7 +108,7 @@ class GameLoop {
             aoiY: player.aoiY
         });
     }  
-    handeleChunkChange(player, oldChunkX, oldChunkY){
+    /*handeleChunkChange(player, oldChunkX, oldChunkY){
         const changed = oldChunkX !== player.chunkX || oldChunkY !== player.chunkY;
         if(!changed){
             return;
@@ -123,7 +123,7 @@ class GameLoop {
                 player.socket.emit("chunkData", chunk.add());
             }
         }
-    }
+    }*/
 
     /*sendAOISnapshots(){
         const rooms = new Map();
@@ -160,6 +160,7 @@ class GameLoop {
     }
 
     updateChunkVisibility(player){
+        console.log(player);
         const visibleChunks = this.getVisibleChunkKeys(player);
         for (const key of visibleChunks) {
             if (player.loadedChunks.has(key)){

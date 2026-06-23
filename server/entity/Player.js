@@ -1,7 +1,8 @@
 class Player {
 
-    constructor(id){
+    constructor(id, socket){
         this.id = id;
+        this.socket = socket
         this.x = 0;
         this.y = 0;
         this.chunkX = 0;
@@ -16,6 +17,10 @@ class Player {
         };
         this.loadedChunks = new Set();
         this.visibleEntities = new Set();
+        this.connectedAt = Date.now();
+        this.lastProcessedTick = 0;
+        this.lastInputSequence = 0;
+        this.ping = 0;
     }
 
     move(data){

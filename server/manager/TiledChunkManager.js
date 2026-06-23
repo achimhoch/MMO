@@ -12,7 +12,7 @@ class TiledChunkManager {
         this.width = this.map.width;
         this.height = this.map.height;
         this.layers = {};
-
+        //console.log(this.map);
         for (const layer of this.map.layers) {
             this.layers[layer.name] = layer.data
         }
@@ -26,7 +26,7 @@ class TiledChunkManager {
             layers: {
                 ground: this.extractLayer("Ground", chunkX, chunkY),
                 objects: this.extractLayer("Objects", chunkX, chunkY),
-                collision: this.extractLayer("Collision", chunkX, chunkY)
+                collision: this.extractLayer("Collision", chunkX, chunkY) 
             }
         };
     }
