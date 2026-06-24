@@ -62,38 +62,6 @@ class GameLoop {
         //this.handleChunkChange(player, oldChunkX, oldChunkY);
     }
 
-    /*sendSnapshots(){
-       //const rooms = new Map();
-
-        for (const player of this.players.values()) {
-           const entities = [];
-           for (const other of this.players.values()) {
-               const key = `${other.chunkX}:${other.chunkY}`;
-               if (player.visibleChunks.has(key)){
-                    continue;
-                }
-                entities.push({
-                    id: other.id,
-                    x: other.x,
-                    y: other.y
-                });
-           }
-
-           player.socket.emit("worldSnapshot", {
-                tick: this.tick,
-                entities
-           });
-        } 
-    }*/
-
-    sendChunkDiffs(){
-        const dirtyChunks = this.chunkManager.getDirtyChunks();
-        for (const chunk of dirtyChunks) {
-            this.io.emit("chunkDiff", chunk.getData());
-            chunk.clearDirty();
-        }
-    }
-
     handleAOIChange(player, oldAOIX, oldAOIY){
         const changed = oldAOIX !== player.aoiX || oldAOIY !== player.aoiY;
         if(!changed){
@@ -107,48 +75,8 @@ class GameLoop {
             aoiX: player.aoiX,
             aoiY: player.aoiY
         });
-    }  
-    /*handeleChunkChange(player, oldChunkX, oldChunkY){
-        const changed = oldChunkX !== player.chunkX || oldChunkY !== player.chunkY;
-        if(!changed){
-            return;
-        }
-        this.startChunkStream(player);
-    }  
-
-    startChunkStream(player){
-        for(let x = player.chunkX - this.viewRadius; x <= player.chunkX + this.viewRadius; x++) {
-            for(let y = player.chunkY - this.viewRadius; y <= player.chunkY + this.viewRadius; y++) {
-                const chunk = this.chunkManager.getChunk(x, y);
-                player.socket.emit("chunkData", chunk.add());
-            }
-        }
-    }*/
-
-    /*sendAOISnapshots(){
-        const rooms = new Map();
-        for (const player of this.players.values()){
-            const room = AOIManager.roomName(player.aoiX, player.aoiY);
-            if (!rooms.has(room)){
-                rooms.set(room, []);
-            }
-            rooms.get(room).push(player);
-        }
-
-        for (const [room, roomPlayers] of rooms) {
-            const snapshot = {
-                tick: this.tick,
-                entities: roomPlayers.map(p => ({
-                    id: p.id,
-                    x: p.x,
-                    y: p.y
-                }))
-            };
-            this.io.to(room).emit("worldSnapshot", snapshot);
-        }
-
-    }*/
-
+    }
+    
     getVisibleChunkKeys(player) {
         const visible = new Set();
         for (let cy = player.chunkY - this.viewRadius; cy <= player.chunkY + this.viewRadius; cy++) {
@@ -169,7 +97,7 @@ class GameLoop {
             player.loadedChunks.add(key);
             const [chunkX, chunkY] = key.split(":").map(Number);
             this.chunkManager.addReference(chunkX, chunkY);
-            player.socket.emit("chunkLoad", this.chunkManager.getChunkData(chunkX, chunkY));
+            player.socket.emit("chunkLoad", this.chunkManager.getChunkData(chunkX, chunkY)); 
 
         }
 
@@ -248,6 +176,90 @@ class GameLoop {
             player.socket.emit("entityDelta", delta);
         }
     }
+
+    sendChunkDiffs(){
+        const dirtyChunks = this.chunkManager.getDirtyChunks();
+        for (const chunk of dirtyChunks) {
+            this.io.emit("chunkDiff", chunk.getData());
+            chunk.clearDirty();
+        }
+    }
+
+    /*sendSnapshots(){
+       //const rooms = new Map();
+
+        for (const player of this.players.values()) {
+           const entities = [];
+           for (const other of this.players.values()) {
+               const key = `${other.chunkX}:${other.chunkY}`;
+               if (player.visibleChunks.has(key)){
+                    continue;
+                }
+                entities.push({
+                    id: other.id,
+                    x: other.x,
+                    y: other.y
+                });
+           }
+
+           player.socket.emit("worldSnapshot", {
+                tick: this.tick,
+                entities
+           });
+        } 
+    }*/
+
+    
+   
+    /*handeleChunkChange(player, oldChunkX, oldChunkY){
+        const changed = oldChunkX !== player.chunkX || oldChunkY !== player.chunkY;
+        if(!changed){
+            return;
+        }
+        this.startChunkStream(player);
+    }  
+
+    startChunkStream(player){
+        for(let x = player.chunkX - this.viewRadius; x <= player.chunkX + this.viewRadius; x++) {
+            for(let y = player.chunkY - this.viewRadius; y <= player.chunkY + this.viewRadius; y++) {
+                const chunk = this.chunkManager.getChunk(x, y);
+                player.socket.emit("chunkData", chunk.add());
+            }
+        }
+    }*/
+
+    /*sendAOISnapshots(){
+        const rooms = new Map();
+        for (const player of this.players.values()){
+            const room = AOIManager.roomName(player.aoiX, player.aoiY);
+            if (!rooms.has(room)){
+                rooms.set(room, []);
+            }
+            rooms.get(room).push(player);
+        }
+
+        for (const [room, roomPlayers] of rooms) {
+            const snapshot = {
+                tick: this.tick,
+                entities: roomPlayers.map(p => ({
+                    id: p.id,
+                    x: p.x,
+                    y: p.y
+                }))
+            };
+            this.io.to(room).emit("worldSnapshot", snapshot);
+        }
+
+    }*/
+
+   
+   
+
+   
+
+    
+
+    
 }
 
 module.exports = GameLoop;

@@ -14,7 +14,7 @@ export default class EntityManager {
             return;
         }
         const pos = IsoMath.worldToIso(data.x, data.y);
-        const sprite = this.scene.add.sprite(pos.x, pos.y, "player");
+        const sprite = this.scene.add.image(pos.x, pos.y, "player");
         sprite.setOrigin(0.5, 1);
         sprite.depth = IsoMath.depth(data.x, data.y);
         sprite.worldX = data.x;

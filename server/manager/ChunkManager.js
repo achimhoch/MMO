@@ -16,17 +16,7 @@ class ChunkManager {
     }
 
     hasChunk(chunkX, chunkY){
-        return this.chunks.has(this.key(chunkX, chunkY));
-    }
-
-    getChunk(chunkX, chunkY){
-        const key = this.key(chunkX, chunkY);
-        if(!this.chunks.has(key)){
-            const chunk = this.createChunk(chunkX, chunkY);
-            this.chunks.set( key, chunk);
-        }
-
-        return this.chunks.get(key);
+        return this.chunks.has(this.key(chunkX, chunkY)); 
     }
 
     createChunk(chunkX, chunkY){
@@ -36,13 +26,40 @@ class ChunkManager {
         chunk.layers.ground = tiledChunk.layers.ground;
         chunk.layers.object = tiledChunk.layers.object;
         chunk.layers.collision = tiledChunk.layers.collision;
-        console.log(chunk);
+        //console.log(chunk);
         return chunk;
     }
 
-    unloadChunk(chunkX, chunkY){
+    getChunk(chunkX, chunkY){
         const key = this.key(chunkX, chunkY);
-        this.chunks.delete(key);
+        if(!this.chunks.has(key)){
+            const chunk = this.createChunk(chunkX, chunkY);
+            this.chunks.set( key, chunk);
+        }
+        //console.log(this.chunks.get(key));
+        return this.chunks.get(key);
+    }
+
+    getChunkData(chunkX, chunkY){
+        //console.log(this.getChunk(chunkX, chunkY).getData());
+        return this.getChunk(chunkX, chunkY).getData();
+    }
+
+    addReference(chunkX, chunkY){
+        const chunk = this.getChunk(chunkX, chunkY);
+        chunk.addReference();
+    }
+
+    removeReference(chunkX, chunkY){
+        const key = this.key(chunkX, chunkY);
+        if (this.chunks.has(key)){
+            return;        
+        }
+        const chunk = this.chunks.get(key);
+        chunk.removeReference();
+        if (!chunk.hasReferences()){
+            this.chunks.delete(key);
+        }
     }
 
     setTile(chunkX, chunkY, layer, index, value){
@@ -72,8 +89,9 @@ class ChunkManager {
         }
     }
 
-    getChunkData(chunkX, chunkY){
-        return this.getChunk(chunkX, chunkY).getData();
+    unloadChunk(chunkX, chunkY){
+        const key = this.key(chunkX, chunkY);
+        this.chunks.delete(key);
     }
 
     getVisibleChunks(centerChunkX, centerChunkY, radius) {
@@ -90,26 +108,21 @@ class ChunkManager {
         return Array.from(this.chunks.keys());
     }
 
-    addReference(chunkX, chunkY){
-        const chunk = this.getChunk(chunkX, chunkY);
-        chunk.addReference();
-    }
-
-    removeReference(chunkX, chunkY){
-        const key = this.key(chunkX, chunkY);
-        if (this.chunks.has(key)){
-            return;        
+    getStats() {
+        let reference = 0;
+        for (const chunk of this.chunks.values()) {
+            reference += chunk.refCount;
         }
-        const chunk = this.chunks.get(key);
-        chunk.removeReference();
-        if (!chunk.hasReferences()){
-            this.chunks.delete(key);
+
+        return {
+            loadedChunk: this.chunks.size,
+            reference
         }
     }
 
-    chunkKey(x, y){
+    /*chunkKey(x, y){
         return `${x}:${y}`;
-    }
+    }*/
 }
 
 module.exports = ChunkManager;

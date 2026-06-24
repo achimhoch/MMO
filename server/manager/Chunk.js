@@ -64,7 +64,7 @@ class Chunk {
         return {
             x: this.x,
             y: this.y,
-            tiles: this.layers  
+            layers: this.layers  
         };
     }
 }
