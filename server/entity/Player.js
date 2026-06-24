@@ -3,8 +3,8 @@ class Player {
     constructor(id, socket){
         this.id = id;
         this.socket = socket
-        this.x = 0;
-        this.y = 0;
+        this.x = 10;
+        this.y = 10;
         this.chunkX = 0;
         this.chunkY = 0;
         this.aoiX = 0;

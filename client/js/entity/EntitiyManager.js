@@ -9,22 +9,25 @@ export default class EntityManager {
     }
 
     spawnPlayer(data){
-
+        //console.log(data);
+        console.log(this.players.has(data.id));
         if(this.players.has(data.id)){
             return;
         }
         const pos = IsoMath.worldToIso(data.x, data.y);
-        const sprite = this.scene.add.sprite(pos.x, pos.y, "player");
+        const sprite = this.scene.add.image(pos.x, pos.y, "player");
         //console.log(sprite);
         sprite.setOrigin(0.5, 1);
-        sprite.depth = pos.y + 100;
+        sprite.depth = IsoMath.depth(pos.x, pos.y);
         sprite.worldX = data.x;
         sprite.worldY = data.y
+        this.scene.cameras.main.startFollow(sprite);
         this.players.set(data.id, sprite);
+       //console.log(this.players);
     }
 
     updatePlayer(data){
-
+        //console.log(data);
         let player = this.players.get(data.id);
         if(!player){
             this.spawnPlayer(data);
@@ -32,9 +35,10 @@ export default class EntityManager {
         }
         const pos = IsoMath.worldToIso(data.x, data.y);
         player.setPosition(pos.x, pos.y);
-        player.depth = pos.y;
+        player.depth = IsoMath.depth(pos.x, pos.y);
         player.worldX = data.x;
         player.worldY = data.y;
+        this.scene.cameras.main.startFollow(player);
     }
 
     removePlayer(id){

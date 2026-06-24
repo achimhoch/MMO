@@ -21,7 +21,6 @@ class GameLoop {
 
     update(){
         this.tick++;
-        const entities = [];
         for(const player of this.players.values()){
             this.updatePlayer(player);
             this.updateChunkVisibility(player);
@@ -90,20 +89,24 @@ class GameLoop {
     updateChunkVisibility(player){
         //console.log(player);
         const visibleChunks = this.getVisibleChunkKeys(player);
+        //console.log(Array.from(visibleChunks));
         for (const key of visibleChunks) {
+            //console.log(key);
+
             if (player.loadedChunks.has(key)){
                 continue;
             }
             player.loadedChunks.add(key);
-            //console.log(player);
+            //console.log(player.id, Array.from(player.loadedChunks));
             const [chunkX, chunkY] = key.split(":").map(Number);
+            //console.log(chunkX, chunkY);
             this.chunkManager.addReference(chunkX, chunkY);
             player.socket.emit("chunkLoad", this.chunkManager.getChunkData(chunkX, chunkY)); 
 
         }
 
         for (const key of Array.from(player.loadedChunks)) {
-            if (!visibleChunks.has(key)) {
+            if (visibleChunks.has(key)) {
                 continue;
             }
             player.loadedChunks.delete(key);
@@ -114,26 +117,47 @@ class GameLoop {
     }
 
     getVisibleEntities(player) {
+        //console.log(Array.from(player.loadedChunks));
+
         const visible = [];
         for (const other of this.players.values()) {
-            const key = `${other.chunkX},${other.chunkY}`;
-            if (!player.loadedChunks.has(key)) {
+            //console.log(other);
+            if ( other.chunkX === undefined || other.chunkY === undefined) {
                 continue;
             }
-            visible.push(other);
+            const key = `${other.chunkX}:${other.chunkY}`;
+            if (player.loadedChunks.has(key)) {
+                visible.push(other);
+            }
+            
         }
+       /*console.log(
+            "loadedChunks",
+            Array.from(player.loadedChunks)
+        );
+
+        console.log(
+            "visibleEntities",
+            visible.map(
+                e => e.id
+            )
+        );*/
+
         return visible;
     }
 
     buildDelta(player) {
+        //console.log(player);
         const added = [];
         const updated = [];
         const removed = [];
         const current = new Set();
         const entities = this.getVisibleEntities(player);
+        //console.log(entities);
         //added + updated
         for (const entity of entities) {
             current.add(entity.id);
+            //console.log(current);
             if (!player.visibleEntities.has(entity.id)) {
                 added.push({
                     id: entity.id,
@@ -157,7 +181,10 @@ class GameLoop {
             removed.push(id);
         }
 
-        player.getVisibleEntities = current;
+        player.visibleEntities = current;
+
+        //console.log("visibleEntities", player.id, current);
+        //console.log(added, updated, removed);
 
         return {
             tick: this.tick,
@@ -173,7 +200,7 @@ class GameLoop {
             if (delta.added.length === 0 && delta.updated.length === 0 && delta.removed.length === 0) {
                 continue;
             }
-
+            //console.log(delta);
             player.socket.emit("entityDelta", delta);
         }
     }
@@ -181,7 +208,14 @@ class GameLoop {
     sendChunkDiffs(){
         const dirtyChunks = this.chunkManager.getDirtyChunks();
         for (const chunk of dirtyChunks) {
-            this.io.emit("chunkDiff", chunk.getData());
+            const key = `${chunk.x}:${chunk.y}`;
+            for (const player of this.players.values()) {
+                if (!player.loadedChunks.has(key)) {
+                    continue;
+                }
+                 player.socket.emit("chunkDiff", chunk.getData());
+            }
+           
             chunk.clearDirty();
         }
     }
