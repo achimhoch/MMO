@@ -15,12 +15,14 @@ export default class ChunkManager {
     }
 
     loadChunk(chunk) {
-        const key = this.key(chunk.x, chunk.y);
+        const key = this.key(chunk.x, chunk.y); 
         if (this.chunks.has(key)) {
             return;
         }
         const container = this.renderer.renderChunk(chunk);
+        //console.log(container);
         this.chunks.set(key, container);
+        //console.log(this.chunks);
     }
 
     unloadChunk(x, y) {

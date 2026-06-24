@@ -95,6 +95,7 @@ class GameLoop {
                 continue;
             }
             player.loadedChunks.add(key);
+            //console.log(player);
             const [chunkX, chunkY] = key.split(":").map(Number);
             this.chunkManager.addReference(chunkX, chunkY);
             player.socket.emit("chunkLoad", this.chunkManager.getChunkData(chunkX, chunkY)); 

@@ -13,13 +13,15 @@ export default class ChunkRenderer {
             if (tile !== 0) {
                 const x = index % size;
                 const y = Math.floor(index / size);
-                const pos = IsoMath.worldToIso(x + 64, y + 32);
-                const sprite = this.scene.add.sprite(pos.x, pos.y, 'tiles', tile - 1);
+                const worldX = chunk.x * size + x;
+                const worldY = chunk.y * size + y;
+                const pos = IsoMath.worldToIso(worldX * 64, worldY * 32); 
+                const sprite = this.scene.add.sprite(pos.x, pos.y, 'tiles', tile);
                 sprite.depth = pos.y;
                 container.add(sprite);
             }
         });
-
+        //console.log(container);
         return container;
     }   
 }

@@ -14,9 +14,10 @@ export default class EntityManager {
             return;
         }
         const pos = IsoMath.worldToIso(data.x, data.y);
-        const sprite = this.scene.add.image(pos.x, pos.y, "player");
+        const sprite = this.scene.add.sprite(pos.x, pos.y, "player");
+        //console.log(sprite);
         sprite.setOrigin(0.5, 1);
-        sprite.depth = IsoMath.depth(data.x, data.y);
+        sprite.depth = pos.y + 100;
         sprite.worldX = data.x;
         sprite.worldY = data.y
         this.players.set(data.id, sprite);
@@ -46,5 +47,13 @@ export default class EntityManager {
 
     getPlayer(id){
         return this.players.get(id);
+    }
+
+    getPlayers() {
+        return this.players;
+    }
+
+    update() {
+
     }
 }

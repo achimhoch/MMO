@@ -17,14 +17,13 @@ export default class WorldScene extends Phaser.Scene {
     }
 
     create() {
-        this.chunkManager = new ChunkManager(this);
+        this.cameras.main.setZoom(1.5);
         this.entityManager = new EntityManager(this);
+        this.chunkManager = new ChunkManager(this);
         this.network = new NetworkManager(this);
         this.network.connect();
         this.cursors = this.input.keyboard.createCursorKeys(); 
-        this.cameras.main.setZoom(1.5);
-        this.currentChunkX = 0;
-        this.currentChunkY = 0;
+       
     }
 
     update() {
@@ -35,6 +34,8 @@ export default class WorldScene extends Phaser.Scene {
             up: this.cursors.up.isDown,
             down: this.cursors.down.isDown
         });
+
+        this.entityManager.update();
        
     }
 

@@ -23,17 +23,28 @@ class Player {
         this.ping = 0;
     }
 
-    move(data){
-        this.x = data.x;
-        this.y = data.y;
-    }
-
     getData(){
         return {
             id:this.id,
             x:this.x,
             y:this.y
         };
+    }
+
+    getState() {
+        return {
+            id: this.id,
+            x: this.x,
+            y: this.y,
+            chunkX: this.chunkX,
+            chunkY: this.chunkY,
+            aoiX: this.aoiX,
+            aoiY: this.aoiY
+        };
+    }
+
+    getChunkKey() {
+        return `${this.chunkX}:${this.chunkY}`; 
     }
 }
 

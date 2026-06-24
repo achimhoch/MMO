@@ -11,12 +11,13 @@ export default class NetworkManager {
     connect() {
 
         this.socket.on("init", (data) => {
+            //console.log(data);
             this.playerId = data.id;
-            //this.scene.entityManager.spawnPlayer(data); 
+            this.scene.entityManager.spawnPlayer(data); 
         });
 
         this.socket.on("chunkLoad", (chunk) => {
-           //console.log(chunk);
+        //console.log(chunk);
             this.scene.chunkManager.loadChunk(chunk);
         });
 
@@ -28,10 +29,10 @@ export default class NetworkManager {
             this.scene.chunkManager.updateChunk(chunk);
         });
         
-        this.socket.on("aoiChanged", (data) => {
+       /*this.socket.on("aoiChanged", (data) => {
                 console.log("AOI geändert:", data);
             }
-        );
+        );*/
 
         this.socket.on("entityDelta", (delta) => {
            delta.added.forEach((entity) => {
