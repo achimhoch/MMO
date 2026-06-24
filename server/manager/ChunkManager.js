@@ -26,7 +26,7 @@ class ChunkManager {
         chunk.layers.ground = tiledChunk.layers.ground;
         chunk.layers.object = tiledChunk.layers.object;
         chunk.layers.collision = tiledChunk.layers.collision;
-        //console.log(chunk);
+        //console.log(chunk.layers.ground);
         return chunk;
     }
 

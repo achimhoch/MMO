@@ -10,7 +10,7 @@ export default class EntityManager {
 
     spawnPlayer(data){
         //console.log(data);
-        console.log(this.players.has(data.id));
+        //console.log(this.players.has(data.id));
         if(this.players.has(data.id)){
             return;
         }
@@ -21,7 +21,8 @@ export default class EntityManager {
         sprite.depth = IsoMath.depth(pos.x, pos.y);
         sprite.worldX = data.x;
         sprite.worldY = data.y
-        this.scene.cameras.main.startFollow(sprite);
+        //this.scene.cameras.main.startFollow(sprite);
+        this.scene.cameras.main.centerOn(pos.x, pos.y);
         this.players.set(data.id, sprite);
        //console.log(this.players);
     }
@@ -38,7 +39,7 @@ export default class EntityManager {
         player.depth = IsoMath.depth(pos.x, pos.y);
         player.worldX = data.x;
         player.worldY = data.y;
-        this.scene.cameras.main.startFollow(player);
+        this.scene.cameras.main.centerOn(pos.x, pos.y);
     }
 
     removePlayer(id){

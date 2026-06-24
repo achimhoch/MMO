@@ -46,14 +46,14 @@ class SocketServer {
             });
 
             socket.on("input", (input) => {
-                console.log(input);
-                //player.input = input;
-                player.input = {
+                //console.log(input);
+                player.input = input;
+                /*player.input = {
                     left: !!input.left,
                     right: !!input.right,
                     up: !!input.up,
                     down: !!input.down
-                };
+                };*/
             });
 
             /*socket.on("move", (data) => {

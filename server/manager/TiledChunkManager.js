@@ -7,7 +7,7 @@ class TiledChunkManager {
     constructor() {
 
         this.chunkSize = 16;
-        this.file = path.join(__dirname, "../../client/assets/maps/continents/grassland2.json")
+        this.file = path.join(__dirname, "../../client/assets/maps/continents/grassland2.json") 
         this.map = JSON.parse(fs.readFileSync(this.file));
         this.width = this.map.width;
         this.height = this.map.height;

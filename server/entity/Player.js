@@ -5,6 +5,7 @@ class Player {
         this.socket = socket
         this.x = 10;
         this.y = 10;
+        this.speed = 4;
         this.chunkX = 0;
         this.chunkY = 0;
         this.aoiX = 0;
