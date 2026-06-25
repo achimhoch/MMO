@@ -28,11 +28,15 @@ export default class WorldScene extends Phaser.Scene {
 
     update() {
 
-        this.network.sendInput({
+        const input = {
             left: this.cursors.left.isDown,
             right: this.cursors.right.isDown,
             up: this.cursors.up.isDown,
-            down: this.cursors.down.isDown
+            down: this.cursors.down.isDown,
+        };
+
+        this.network.sendInput({
+            input
         });
 
         this.entityManager.update();

@@ -22,6 +22,7 @@ class Player {
         this.lastProcessedTick = 0;
         this.lastInputSequence = 0;
         this.ping = 0;
+        this.lastProcessedInput = 0;
     }
 
     getData(){

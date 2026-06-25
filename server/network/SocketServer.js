@@ -45,9 +45,14 @@ class SocketServer {
                 y: player.y
             });
 
-            socket.on("input", (input) => {
+            socket.on("input", (data) => {
                 //console.log(input);
-                player.input = input;
+                const Player = players.get(socket.id);
+                if (!Player) {
+                    return;
+                }
+                Player.lastProcessedInput = data.sequence;
+                Player.input = data.input;
                 /*player.input = {
                     left: !!input.left,
                     right: !!input.right,

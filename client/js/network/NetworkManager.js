@@ -56,6 +56,9 @@ export default class NetworkManager {
 
     sendInput(input){
 
-        this.socket.emit("input", input); 
+        this.socket.emit("input", {
+            input,
+            sequence
+        }); 
     }
 }

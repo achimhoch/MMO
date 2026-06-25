@@ -162,13 +162,15 @@ class GameLoop {
                 added.push({
                     id: entity.id,
                     x: entity.x,
-                    y: entity.y
+                    y: entity.y,
+                    lastProcessedInput: entity.lastProcessedInput
                 });
             } else {
                 updated.push({
                     id: entity.id,
                     x: entity.x,
-                    y: entity.y
+                    y: entity.y,
+                    lastProcessedInput: entity.lastProcessedInput
                 });
             }
         }
