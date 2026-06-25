@@ -36,7 +36,7 @@ export default class EntityManager {
         }
         const pos = IsoMath.worldToIso(data.x, data.y);
         player.setPosition(pos.x, pos.y);
-        player.depth = IsoMath.depth(pos.x, pos.y);
+        player.depth = pos.y + 10000;
         player.worldX = data.x;
         player.worldY = data.y;
         this.scene.cameras.main.centerOn(pos.x, pos.y);

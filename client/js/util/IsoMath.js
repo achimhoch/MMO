@@ -7,6 +7,9 @@ export default class IsoMath {
 
         return {
 
+            /*x: x - y,
+            y: (x + y) / 2*/
+
             x:
                 (x - y) *
                 (this.TILE_W / 2),
