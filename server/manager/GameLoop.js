@@ -1,9 +1,12 @@
 const AOISystem = require("../systems/AOISystem");
 const MovementSystem = require("../systems/MovementSystem");
 const ChunkSystem = require("../systems/ChunkSystem");
+const InterestSystem = require("../systems/InterestSystem");
+const EntityDeltaSystem = require("../systems/EntityDeltaSystem");
+const ChunkDiffSystem = require("../systems/ChunkDiffSystem");
 
 
-const WorldConfig = require("../../shared/config");
+require('dotenv').config();
 
 
 class GameLoop {
@@ -15,6 +18,9 @@ class GameLoop {
         this.movementSystem = new MovementSystem();
         this.aoiSystem = new AOISystem();
         this.chunkSystem = new ChunkSystem();
+        this.interestSystem = new InterestSystem();
+        this.entityDeltaSystem = new EntityDeltaSystem(players, this.interestSystem);
+        this.chunkDiffSystem = new ChunkDiffSystem(players, chunkManager);
         this.tick = 0;
     }
 
@@ -32,8 +38,9 @@ class GameLoop {
             this.aoiSystem.update(player);
             this.chunkSystem.update(player);
         }
-        this.sendEntityDeltas();
-        this.sendChunkDiffs();
+        this.entityDeltaSystem.setTick(this.tick);
+        this.entityDeltaSystem.send();
+        this.chunkDiffSystem.send();
     }
 
     /*updatePlayer(player){
@@ -140,7 +147,7 @@ class GameLoop {
             this.chunkManager.removeReference(chunkX, chunkY);
             player.socket.emit("chunkUnload", {chunkX, chunkY});
         }
-    }*/
+    }
 
     getVisibleEntities(player) {
         //console.log(Array.from(player.loadedChunks));
@@ -167,7 +174,7 @@ class GameLoop {
             visible.map(
                 e => e.id
             )
-        );*/
+        );
 
         return visible;
     }

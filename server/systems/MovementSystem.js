@@ -1,4 +1,4 @@
-const WorldConfig = require("../../shared/config");
+require('dotenv').config();
 
 class MovementSystem {
 
@@ -46,8 +46,8 @@ class MovementSystem {
         ----------------------------
         */
 
-        player.tileX = Math.floor(player.worldX / WorldConfig.TILE_WIDTH);
-        player.tileY = Math.floor(player.worldY / WorldConfig.TILE_HEIGHT);
+        player.tileX = Math.floor(player.worldX / process.env.TILE_WIDTH);
+        player.tileY = Math.floor(player.worldY / process.env.TILE_HEIGHT);
 
         /*
         ----------------------------
@@ -55,15 +55,15 @@ class MovementSystem {
         ----------------------------
         */
 
-        player.chunkX = Math.floor(player.tileX / WorldConfig.CHUNK_SIZE);
-        player.chunkY = Math.floor(player.tileY / WorldConfig.CHUNK_SIZE);
+        player.chunkX = Math.floor(player.tileX / process.env.CHUNK_SIZE);
+        player.chunkY = Math.floor(player.tileY / process.env.CHUNK_SIZE);
 
-        return {
+       /* return {
             oldChunkX: oldChunkX,
             oldChunkY: oldChunkY,
             oldAOIX: oldAOIX,
             oldAOIY: oldAOIY 
-        };
+        };*/
     }
 }
 
