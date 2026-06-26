@@ -3,9 +3,11 @@ class Player {
     constructor(id, socket){
         this.id = id;
         this.socket = socket
-        this.x = 10;
-        this.y = 10;
+        this.worldX = 10;
+        this.worldY = 10;
         this.speed = 4;
+        this.tileX = 0;
+        this.tileY = 0;
         this.chunkX = 0;
         this.chunkY = 0;
         this.aoiX = 0;
@@ -28,16 +30,18 @@ class Player {
     getData(){
         return {
             id:this.id,
-            x:this.x,
-            y:this.y
+            x:this.worldX,
+            y:this.worldY
         };
     }
 
     getState() {
         return {
             id: this.id,
-            x: this.x,
-            y: this.y,
+            x: this.worldX,
+            y: this.worldY,
+            tileX: this.tileX,
+            tileY: this.tileY,
             chunkX: this.chunkX,
             chunkY: this.chunkY,
             aoiX: this.aoiX,

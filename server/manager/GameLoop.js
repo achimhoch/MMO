@@ -1,4 +1,6 @@
-const AOIManager = require("../manager/AOIManager");
+const AOIManager = require("./AOIManager");
+const { TILE_WIDTH, TILE_HEIGHT, CHUNK_SIZE, VIEW_RADIUS } = require("../../shared/config");
+
 
 class GameLoop {
 
@@ -8,8 +10,6 @@ class GameLoop {
         this.chunkManager = chunkManager;
         this.tickRate = 20;
         this.tick = 0;
-        this.chunkSize = 16;
-        this.viewRadius = 1;
     }
 
     start(){
@@ -35,7 +35,10 @@ class GameLoop {
         const oldAOIX = player.aoiX;
         const oldAOIY = player.aoiY;
 
-        if(player.input.left){
+        let vx = 0;
+        let vy = 0;
+
+        /*if(player.input.left){
 
             player.x -= player.speed;
         }
@@ -50,10 +53,26 @@ class GameLoop {
 
         if(player.input.down){
             player.y += player.speed;
+        }*/
+
+        if (player.input.left) vx--;
+        if (player.input.right) vx++;
+        if (player.input.up) vy--;
+        if (player.input.down) vy--;
+
+        if (vx !== 0 || vy !== 0) {
+            const len = Math.hypot(vx, vy);
+
+            player.worldX += (vx / len) * player.speed;
+            player.worldY += (vy / len) * player.speed;
         }
 
-        player.chunkX = Math.floor(player.x / this.chunkSize);
-        player.chunkY = Math.floor(player.y / this.chunkSize);
+        player.tileX = Math.floor(player.worldX / TILE_WIDTH);
+        player.tileY = Math.floor(player.worldY / TILE_HEIGHT);
+
+        player.chunkX = Math.floor(player.tileX / CHUNK_SIZE);
+        player.chunkY = Math.floor(player.tileY / CHUNK_SIZE);
+
         const aoi = AOIManager.getAOI(player.chunkX, player.chunkY);
         player.aoiX = aoi.x;
         player.aoiY = aoi.y;
@@ -78,8 +97,8 @@ class GameLoop {
     
     getVisibleChunkKeys(player) {
         const visible = new Set();
-        for (let cy = player.chunkY - this.viewRadius; cy <= player.chunkY + this.viewRadius; cy++) {
-            for (let cx = player.chunkX - this.viewRadius; cx <= player.chunkX + this.viewRadius; cx++) {
+        for (let cy = player.chunkY - VIEW_RADIUS; cy <= player.chunkY + VIEW_RADIUS; cy++) {
+            for (let cx = player.chunkX - VIEW_RADIUS; cx <= player.chunkX + VIEW_RADIUS; cx++) {
                 visible.add(`${cx}:${cy}`);
             }
         }
@@ -161,15 +180,15 @@ class GameLoop {
             if (!player.visibleEntities.has(entity.id)) {
                 added.push({
                     id: entity.id,
-                    x: entity.x,
-                    y: entity.y,
+                    x: entity.worldX,
+                    y: entity.worldY,
                     lastProcessedInput: entity.lastProcessedInput
                 });
             } else {
                 updated.push({
                     id: entity.id,
-                    x: entity.x,
-                    y: entity.y,
+                    x: entity.worldX,
+                    y: entity.worldY,
                     lastProcessedInput: entity.lastProcessedInput
                 });
             }
