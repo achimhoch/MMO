@@ -1,6 +1,8 @@
-import NetworkManager from "../network/NetworkManager.js";
-import ChunkManager from "../rendering/ChunkManager.js";
-import EntityManager from "../entity/EntitiyManager.js";
+import NetworkManager from "../managers/NetworkManager.js";
+import ChunkManager from "../managers/ChunkManager.js";
+import EntityManager from "../managers/EntitiyManager.js";
+import InputManager from "../managers/InputManager.js";
+import PredictionManager from "../managers/PredictionManager.js";
 
 
 const socket = io();
@@ -18,6 +20,8 @@ export default class WorldScene extends Phaser.Scene {
 
     create() {
         this.cameras.main.setZoom(1.5);
+        this.inputmanager = new InputManager(this);
+        this.predictionManager = new PredictionManager(this);
         this.entityManager = new EntityManager(this);
         this.chunkManager = new ChunkManager(this);
         this.network = new NetworkManager(this);
@@ -28,16 +32,26 @@ export default class WorldScene extends Phaser.Scene {
 
     update() {
 
-        const input = {
+        /*const input = {
             left: this.cursors.left.isDown,
             right: this.cursors.right.isDown,
             up: this.cursors.up.isDown,
             down: this.cursors.down.isDown,
-        };
+        };*/
+
+        const input = this.inputmanager.createInput();
 
         this.network.sendInput({
             input
         });
+
+        const localPlayer = this.entityManager.getPlayer(socket.id);
+        if (localPlayer) {
+            this.predictionManager.applyLocalInput(
+                localPlayer,
+                input
+            )
+        }
 
         this.entityManager.update();
        

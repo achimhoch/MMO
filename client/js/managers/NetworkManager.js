@@ -56,6 +56,13 @@ export default class NetworkManager {
 
     sendInput(input){
 
+        const sequence = this.scene.inputManager.nextSequence();
+
+        this.scene.inputManager.pendingInputs.push({
+                sequence,
+                input
+        });
+
         this.socket.emit("input", {
             input,
             sequence
