@@ -17,7 +17,7 @@ class GameLoop {
         this.chunkManager = chunkManager;
         this.movementSystem = new MovementSystem();
         this.aoiSystem = new AOISystem();
-        this.chunkSystem = new ChunkSystem();
+        this.chunkSystem = new ChunkSystem(chunkManager);
         this.interestSystem = new InterestSystem();
         this.entityDeltaSystem = new EntityDeltaSystem(players, this.interestSystem);
         this.chunkDiffSystem = new ChunkDiffSystem(players, chunkManager);

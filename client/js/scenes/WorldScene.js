@@ -21,7 +21,7 @@ export default class WorldScene extends Phaser.Scene {
 
     create() {
         this.cameras.main.setZoom(1.5);
-        this.inputmanager = new InputManager(this);
+        this.inputManager = new InputManager(this);
         this.predictionManager = new PredictionManager(this);
         this.interpolationManager = new InterpolationManager(this);
         this.entityManager = new EntityManager(this);
@@ -41,7 +41,7 @@ export default class WorldScene extends Phaser.Scene {
             down: this.cursors.down.isDown,
         };*/
 
-        const input = this.inputmanager.createInput();
+        const input = this.inputManager.createInput();
 
         this.network.sendInput({
             input
