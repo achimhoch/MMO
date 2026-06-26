@@ -14,15 +14,15 @@ export default class EntityManager {
         if(this.players.has(data.id)){
             return;
         }
-        const pos = IsoMath.worldToIso(data.x, data.y);
+        const pos = IsoMath.worldToIso(data.worldX, data.worldY);
         const sprite = this.scene.add.image(pos.x, pos.y, "player");
         //console.log(sprite);
         sprite.setOrigin(0.5, 1);
-        sprite.depth = IsoMath.depth(pos.x, pos.y);
-        sprite.worldX = data.x;
-        sprite.worldY = data.y;
-        sprite.targetX = data.x;
-        sprite.targetY = data.y
+        sprite.depth = pos.y + 1;
+        sprite.worldX = data.worldX;
+        sprite.worldY = data.worldY;
+        sprite.targetX = data.worldX;
+        sprite.targetY = data.worldY;
         //this.scene.cameras.main.startFollow(sprite);
         this.scene.cameras.main.centerOn(pos.x, pos.y);
         this.players.set(data.id, sprite);
@@ -36,13 +36,13 @@ export default class EntityManager {
             this.spawnPlayer(data);
             player = this.players.get(data.id);
         }
-        const pos = IsoMath.worldToIso(data.x, data.y);
+        const pos = IsoMath.worldToIso(data.worldX, data.worldY);
         //player.setPosition(pos.x, pos.y);
-        player.depth = pos.y + 10000;
-        player.worldX = data.x;
-        player.worldY = data.y;
-        player.targetX = data.x;
-        player.targetY = data.y;
+        player.depth = pos.y + 1;
+        player.worldX = data.worldX;
+        player.worldY = data.worldY;
+        player.targetX = data.worldX;
+        player.targetY = data.worldY;
         this.scene.cameras.main.centerOn(pos.x, pos.y);
     }
 

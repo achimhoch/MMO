@@ -1,10 +1,17 @@
-export const TILE_WIDTH = 64;
-export const TILE_HEIGHT = 32;
+ const TILE_WIDTH = 64;
+ const TILE_HEIGHT = 32;
+ const CHUNK_SIZE = 16;
+ const CHUNK_PIXEL_WIDTH = TILE_WIDTH * CHUNK_SIZE;
+ const CHUNK_PIXEL_HEIGHT = TILE_HEIGHT * CHUNK_SIZE;
+ const VIEW_RADIUS = 1;
+ const TICK_RATE = 20;
 
-export const CHUNK_SIZE = 16;
-
-export const CHUNK_PIXEL_WIDTH = TILE_WIDTH * CHUNK_SIZE;
-
-export const CHUNK_PIXEL_HEIGHT = TILE_HEIGHT * CHUNK_SIZE;
-
-export const VIEW_RADIUS = 1;
+module.exports = {
+    TILE_WIDTH,
+    TILE_HEIGHT,
+    CHUNK_SIZE,
+    CHUNK_PIXEL_HEIGHT,
+    CHUNK_PIXEL_WIDTH,
+    TICK_RATE,
+    VIEW_RADIUS
+};
