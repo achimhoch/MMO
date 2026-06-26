@@ -3,6 +3,7 @@ import ChunkManager from "../managers/ChunkManager.js";
 import EntityManager from "../managers/EntitiyManager.js";
 import InputManager from "../managers/InputManager.js";
 import PredictionManager from "../managers/PredictionManager.js";
+import InterpolationManager from "../managers/InterpolationManager.js";
 
 
 const socket = io();
@@ -22,6 +23,7 @@ export default class WorldScene extends Phaser.Scene {
         this.cameras.main.setZoom(1.5);
         this.inputmanager = new InputManager(this);
         this.predictionManager = new PredictionManager(this);
+        this.interpolationManager = new InterpolationManager(this);
         this.entityManager = new EntityManager(this);
         this.chunkManager = new ChunkManager(this);
         this.network = new NetworkManager(this);
@@ -54,6 +56,8 @@ export default class WorldScene extends Phaser.Scene {
         }
 
         this.entityManager.update();
+
+        this.interpolationManager.update();
        
     }
 

@@ -20,7 +20,9 @@ export default class EntityManager {
         sprite.setOrigin(0.5, 1);
         sprite.depth = IsoMath.depth(pos.x, pos.y);
         sprite.worldX = data.x;
-        sprite.worldY = data.y
+        sprite.worldY = data.y;
+        sprite.targetX = data.x;
+        sprite.targetY = data.y
         //this.scene.cameras.main.startFollow(sprite);
         this.scene.cameras.main.centerOn(pos.x, pos.y);
         this.players.set(data.id, sprite);
@@ -35,10 +37,12 @@ export default class EntityManager {
             player = this.players.get(data.id);
         }
         const pos = IsoMath.worldToIso(data.x, data.y);
-        player.setPosition(pos.x, pos.y);
+        //player.setPosition(pos.x, pos.y);
         player.depth = pos.y + 10000;
         player.worldX = data.x;
         player.worldY = data.y;
+        player.targetX = data.x;
+        player.targetY = data.y;
         this.scene.cameras.main.centerOn(pos.x, pos.y);
     }
 
