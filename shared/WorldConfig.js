@@ -1,0 +1,18 @@
+module.exports = {
+
+    TILE_WIDTH:64,
+
+    TILE_HEIGHT:32,
+
+    CHUNK_SIZE:16,
+
+    CHUNK_PIXEL_WIDTH:1024,
+
+    CHUNK_PIXEL_HEIGHT:512,
+
+    VIEW_RADIUS:1,
+
+    AOI_SIZE:4,
+
+    TICK_RATE:20
+};

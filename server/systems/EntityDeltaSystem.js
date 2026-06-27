@@ -1,18 +1,39 @@
 class EntityDeltaSystem {
 
-    constructor(players, interestSystem) {
+    constructor(interestSystem) {
 
         this.players = players;
         this.interestSystem = interestSystem;
         this.tick = 0;
     }
 
-    setTick(tick) {
+    /*setTick(tick) {
 
         this.tick = tick;
+    }*/
+//Wird vom SystemManager einmal pro Tick aufgerufen
+    update(context) {
+        for (const player of context.players.values()) {
+            const delta = this.buildDelta(player, context);
+             if (
+
+                delta.added.length === 0 &&
+                delta.updated.length === 0 &&
+                delta.removed.length === 0
+
+            ) {
+                continue;
+            }
+
+            player.socket.emit(
+                "entityDelta",
+                delta
+            );
+        }
     }
 
-    build(player) {
+//Erstellt das delta einens Spieler
+    buildDelta(player, context) {
 
         const current = new Set();
 
@@ -20,13 +41,17 @@ class EntityDeltaSystem {
         const updated = [];
         const removed = [];
 
-        const visible =
+        /**
+         * InterestManagement
+         */
+
+        const visibleEntities =
             this.interestSystem.getVisibleEntities(
                 player,
-                this.players
+                context.players
             );
-
-        for (const entity of visible) {
+//Added + Update
+        for (const entity of visibleEntities) {
 
             current.add(entity.id);
 
@@ -35,7 +60,9 @@ class EntityDeltaSystem {
                 id: entity.id,
 
                 worldX: entity.worldX,
-                worldY: entity.worldY
+                worldY: entity.worldY,
+                chunkX: entity.chunkX,
+                chunkY: entity.chunkY
             };
 
             if (
@@ -49,7 +76,7 @@ class EntityDeltaSystem {
                 added.push(packet);
             }
         }
-
+//removed
         for (const id of player.visibleEntities) {
 
             if (!current.has(id)) {
@@ -70,29 +97,7 @@ class EntityDeltaSystem {
         };
     }
 
-    send() {
-
-        for (const player of this.players.values()) {
-
-            const delta =
-                this.build(player);
-
-            if (
-
-                delta.added.length === 0 &&
-                delta.updated.length === 0 &&
-                delta.removed.length === 0
-
-            ) {
-                continue;
-            }
-
-            player.socket.emit(
-                "entityDelta",
-                delta
-            );
-        }
-    }
+    
 }
 
 module.exports = EntityDeltaSystem;

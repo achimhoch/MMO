@@ -1,9 +1,12 @@
-const AOISystem = require("../systems/AOISystem");
+const SystemManager = require("./SystemManager");
 const MovementSystem = require("../systems/MovementSystem");
+const AOISystem = require("../systems/AOISystem");
 const ChunkSystem = require("../systems/ChunkSystem");
-const InterestSystem = require("../systems/InterestSystem");
 const EntityDeltaSystem = require("../systems/EntityDeltaSystem");
 const ChunkDiffSystem = require("../systems/ChunkDiffSystem");
+const InterestSystem = require("../systems/InterestSystem");
+const WorldConfig = require("../../shared/WorldConfig");
+
 
 
 require('dotenv').config();
@@ -12,35 +15,39 @@ require('dotenv').config();
 class GameLoop {
 
     constructor(io, players, chunkManager){
+        this.tick = 0;
         this.io = io;
         this.players = players;
-        this.chunkManager = chunkManager;
-        this.movementSystem = new MovementSystem();
-        this.aoiSystem = new AOISystem();
-        this.chunkSystem = new ChunkSystem(chunkManager);
-        this.interestSystem = new InterestSystem();
-        this.entityDeltaSystem = new EntityDeltaSystem(players, this.interestSystem);
-        this.chunkDiffSystem = new ChunkDiffSystem(players, chunkManager);
-        this.tick = 0;
+         this.chunkManager = chunkManager;
+        this.context = {
+            io, 
+            players,
+            chunkManager,
+            tick: 0
+        };
+        this.systemManager = new SystemManager();
+        this.systemManager.add(new MovementSystem(), 100);
+        this.systemManager.add(new AOISystem(), 200);
+        this.systemManager.add(new ChunkSystem(), 300);
+        this.systemManager.add(new InterestSystem(), 400);
+        this.systemManager.add(new EntityDeltaSystem(this.InterestSystem), 500);
+        this.systemManager.add(new ChunkDiffSystem(), 600);
+
+        
+        
     }
 
     start(){
 
         setInterval(() => {
             this.update()
-        }, 1000 / this.tickRate);
+        }, 1000 / WorldConfig.TICK_RATE);
     }
 
     update(){
         this.tick++;
-        for(const player of this.players.values()){
-            this.movementSystem.update(player);
-            this.aoiSystem.update(player);
-            this.chunkSystem.update(player);
-        }
-        this.entityDeltaSystem.setTick(this.tick);
-        this.entityDeltaSystem.send();
-        this.chunkDiffSystem.send();
+        this.context.tick = this.tick;
+        this.systemManager.update(this.context);
     }
 
     /*updatePlayer(player){

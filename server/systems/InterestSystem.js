@@ -1,13 +1,38 @@
 class InterestSystem {
+    constructor() {
+        this.aoiIndex = new Map();
+    }
+
+    update(context) {
+        this.buildAOIIndex(context.players);
+    }
+
+    buildAOIINdex() {
+        this.aoiIndex.clear();
+
+        for (const player of players.values()) {
+            const key = `${player.aoiX}:${player.aoiY}`;
+            if (!this.aoiIndex.has(key)) {
+                this.aoiIndex.set(key, []);
+            }
+            this.aoiIndex.get(key).push(player);
+        }
+    }
 
     getVisibleEntities(player, players) {
 
         const visible = [];
+    //eigene AOI
+        const key = `${player.aoiX}:${player.aoiY}`;
+        const list = this.aoiIndex.get(key);
 
-        for (const other of players.values()) {
+        if (!list) {
+            return visible;
+        }
 
-            const key =
-                `${other.chunkX}:${other.chunkY}`;
+        for (const other of list) {
+
+            const key = `${other.chunkX}:${other.chunkY}`;
 
             if (!player.loadedChunks.has(key)) {
                 continue;
