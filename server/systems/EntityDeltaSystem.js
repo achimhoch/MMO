@@ -47,8 +47,7 @@ class EntityDeltaSystem {
 
         const visibleEntities =
             this.interestSystem.getVisibleEntities(
-                player,
-                context.players
+                player
             );
 //Added + Update
         for (const entity of visibleEntities) {
