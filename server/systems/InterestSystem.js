@@ -4,37 +4,66 @@ class InterestSystem {
     }
 
     update(context) {
-        this.buildAOIIndex(context.players);
-    }
-
-    buildAOIINdex() {
-        this.aoiIndex.clear();
-
-        for (const player of players.values()) {
-            const key = `${player.aoiX}:${player.aoiY}`;
-            if (!this.aoiIndex.has(key)) {
-                this.aoiIndex.set(key, []);
-            }
-            this.aoiIndex.get(key).push(player);
+        for (const player of context.players.values()) {
+            this.updatePlayer(player);
         }
     }
 
-    getVisibleEntities(player, players) {
+    updatePlayer(player) {
+        if (!player.aoiChanged) {
+            return;
+        }
+//aus alter AOI entfernen
+        if (player.lastAOIX !== null && player.lastAOIY !== null) {
+            const oldKey = `${player.lastAOIX}:${player.lastAOIY}`;
+            const set = this.aoiIndex.get(oldKey);
+
+            if (set) {
+                set.delete(player);
+                if (set.size === 0) {
+                    this.aoiIndex.delete(oldKey);
+                }
+            }
+        }
+
+// neue AOI
+        const newKey = `${player.aoiX}:${player.aoiY}`;
+        let set = this.aoiIndex.get(newKey);
+
+        if (!set) {
+            set = new Set();
+            this.aoiIndex.set(newKey, set);
+        }
+        set.add(player);
+        player.lastAOIX = player.aoiX;
+        player.lastAOIY = player.aoiY;
+
+        player.aoiChanged = false;
+    }
+
+
+    getVisibleEntities(player) {
 
         const visible = [];
-    //eigene AOI
-        const key = `${player.aoiX}:${player.aoiY}`;
-        const list = this.aoiIndex.get(key);
+    //3x3 AOIs
 
-        if (!list) {
-            return visible;
+        for (let ay = player.aoiY - 1; ay <= player.aoiY + 1; ay++) {
+            for (let ax = player.aoiX - 1; ax <= player.aoiX + 1; ax++) {
+
+            }
+        }
+        const key = `${ax}:${ay}`;
+        const set = this.aoiIndex.get(key);
+
+        if (!set) {
+            continue;
         }
 
-        for (const other of list) {
+        for (const other of set) {
 
-            const key = `${other.chunkX}:${other.chunkY}`;
+            const chunkKey = `${other.chunkX}:${other.chunkY}`;
 
-            if (!player.loadedChunks.has(key)) {
+            if (!player.loadedChunks.has(chunkKey)) {
                 continue;
             }
 

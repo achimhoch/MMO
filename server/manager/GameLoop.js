@@ -26,12 +26,12 @@ class GameLoop {
             tick: 0
         };
         this.systemManager = new SystemManager();
-        this.systemManager.add(new MovementSystem(), 100);
-        this.systemManager.add(new AOISystem(), 200);
-        this.systemManager.add(new ChunkSystem(), 300);
-        this.systemManager.add(new InterestSystem(), 400);
-        this.systemManager.add(new EntityDeltaSystem(this.InterestSystem), 500);
-        this.systemManager.add(new ChunkDiffSystem(), 600);
+        this.systemManager.add(new MovementSystem());
+        this.systemManager.add(new AOISystem());
+        this.systemManager.add(new ChunkSystem());
+        this.systemManager.add(new InterestSystem());
+        this.systemManager.add(new EntityDeltaSystem(this.InterestSystem));
+        this.systemManager.add(new ChunkDiffSystem());
 
         
         

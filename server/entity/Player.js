@@ -12,6 +12,9 @@ class Player {
         this.chunkY = 0;
         this.aoiX = 0;
         this.aoiY = 0;
+        this.lastAOIX = null;
+        this.lastAOIY = null;
+        this.aoiChanged = true;
         this.input = {
             left:false,
             right:false,

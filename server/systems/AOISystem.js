@@ -3,8 +3,14 @@ const AOIManager = require("../manager/AOIManager");
 class AOISystem {
 
     update(context) {
-
         for (const player of context.players.values()) {
+            this.updatePlayer(player);
+        }
+    }
+
+    updatePlayer(player) {
+
+       
             const oldAOIX = player.aoiX;
             const oldAOIY = player.aoiY;
 
@@ -16,24 +22,26 @@ class AOISystem {
             player.aoiX = aoi.x;
             player.aoiY = aoi.y;
 
-            if (oldAOIX === player.aoiX && oldAOIY === player.aoiY) {
-                return false;
+            player.aoiChanged = oldAOIX === player.aoiX && oldAOIY === player.aoiY;
+
+            if (!player.aoiChanged) {
+                return;
             }
 
-            /*
-            --------------------------------
-            Room wechseln
-            --------------------------------
-            */
+    /*
+    --------------------------------
+    alten Room verlassen
+    --------------------------------
+    */
 
-            if (oldAOIX !== undefined && oldAOIY !== undefined) {
+            if (oldAOIX !== undefined && oldAOIY !== undefined && oldAOIX !== null & oldAOIY !== null) {
                 player.socket.leave(
                     AOIManager.roomName(
                         oldAOIX,
                         oldAOIY
                 ));
             }
-
+    // neuen Room betreten
             player.socket.join(
                 AOIManager.roomName(
                     player.aoiX,
@@ -46,7 +54,7 @@ class AOISystem {
                 });
 
             return true;
-        }
+        
     }
 }
 
