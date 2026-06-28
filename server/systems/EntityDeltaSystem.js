@@ -2,7 +2,7 @@ class EntityDeltaSystem {
 
     constructor(interestSystem) {
 
-        this.players = players;
+        //this.players = players;
         this.interestSystem = interestSystem;
         this.tick = 0;
     }

@@ -12,7 +12,7 @@ class ChunkSystem {
      * Wird vom SystemManger einmal pro Tick audgerufen
      */
     update(context) {
-        for (const plaver of context.players.values()) {
+        for (const player of context.players.values()) {
             this.updatePlayer(player, context.chunkManager);
         }
     }

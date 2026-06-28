@@ -5,39 +5,29 @@ const Chunk = require("../manager/Chunk");
 class ChunkManager {
 
     constructor(tiledChunkManager) {
-        this.tiledChunkManager = tiledChunkManager; 
+        this.generator = tiledChunkManager; 
         this.chunks = new Map();
         //this.chunkSize = 16;
         //this.importer = new TiledImporter("../../client/assets/maps/continents/grassland.json");
     }
 
-    key(chunkX, chunkY){
+    getKey(chunkX, chunkY){
         return `${chunkX}:${chunkY}`;
     }
 
-    hasChunk(chunkX, chunkY){
-        return this.chunks.has(this.key(chunkX, chunkY)); 
-    }
-
-    createChunk(chunkX, chunkY){
-        const chunk = new Chunk(chunkX, chunkY); 
-        const tiledChunk = this.tiledChunkManager.loadChunk(chunkX, chunkY);
-        //console.log(tiledChunk);
-        chunk.layers.ground = tiledChunk.layers.ground;
-        chunk.layers.object = tiledChunk.layers.object;
-        chunk.layers.collision = tiledChunk.layers.collision;
-        //console.log(chunk.layers.ground);
-        return chunk;
-    }
+    
 
     getChunk(chunkX, chunkY){
-        const key = this.key(chunkX, chunkY);
-        if(!this.chunks.has(key)){
-            const chunk = this.createChunk(chunkX, chunkY);
-            this.chunks.set( key, chunk);
+        const key = this.getKey(chunkX, chunkY);
+        let chunk = this.chunks.get(key);
+        if(chunk){
+           return chunk;
         }
-        //console.log(this.chunks.get(key));
-        return this.chunks.get(key);
+        
+        const data = this.generator.loadChunk(chunkX, chunkY);
+        chunk = new Chunk(chunkX, chunkY, data.layers);
+        this.chunks.set(key, chunk);
+        return chunk
     }
 
     getChunkData(chunkX, chunkY){
@@ -47,65 +37,52 @@ class ChunkManager {
 
     addReference(chunkX, chunkY){
         const chunk = this.getChunk(chunkX, chunkY);
-        chunk.addReference();
+        chunk.referenceCount++;
     }
 
     removeReference(chunkX, chunkY){
         const key = this.key(chunkX, chunkY);
-        if (this.chunks.has(key)){
-            return;        
-        }
         const chunk = this.chunks.get(key);
-        chunk.removeReference();
-        if (!chunk.hasReferences()){
-            this.chunks.delete(key);
+        if (!chunk) {
+            return;
         }
+        chunk.referenceCount--;
+        if (chunk.referenceCount > 0){
+            return;
+        }
+
+        this.chunks.delete(key);
     }
 
-    setTile(chunkX, chunkY, layer, index, value){
+    setTile(layer, worldTileX, worldTileY, gid){
+        this.generator.setTile(layer, worldTileX, worldTileY, gid);
+        const chunkX = Math.floor(worldTileX / this.generator.chunkSize);
+        const chunkY = Math.floor(worldTileY / this.generator.chunkSize);
         const chunk = this.getChunk(chunkX, chunkY);
-        chunk.layers[layer][index] = value;
+        chunk.layers = this.generator.rebuildChunk(chunkX, chunkY).layers;
         chunk.markDirty();
     }
 
-    getTile(chunkX, chunkY, layerName, tileIndex){
-        const chunk = this.getChunk(chunkX, chunkY);
-        return chunk.layers[layer][tileIndex];
+    getTile(layer, worldTileX, worldTileY) {
+        return this.generator.getTile(layer, worldTileX, worldTileY);
     }
 
     getDirtyChunks(){
         const dirtyChunks = [];
         for(const chunk of this.chunks.values()){
-            if (chunk.dirty){
-                dirty.push(chunk);
+            if (!chunk.dirty){
+                continue;
             }
+
+            dirtyChunks.push(chunk);
         }
         return dirtyChunks;
     }
 
-    clearDirtyChunks(chunkX, chunkY){
-        for(const chunk of this.chunks.values()){
-            chunk.clearDirty();
-        }
-    }
+    
 
-    unloadChunk(chunkX, chunkY){
-        const key = this.key(chunkX, chunkY);
-        this.chunks.delete(key);
-    }
-
-    getVisibleChunks(centerChunkX, centerChunkY, radius) {
-        const visible = [];   
-        for (let cy = centerChunkX - radius; cy <= centerChunkX + radius; cy++) { 
-            for (let cx = centerChunkY - radius; cx <= centerChunkY + radius; cx++) {
-                visible.push(this.getChunk(cx, cy));   
-            }   
-        }
-        return visible;
-    }
-
-    getLoadedChunkKeys() {
-        return Array.from(this.chunks.keys());
+    getLoadedChunks() {
+        return this.chunks;
     }
 
     getStats() {
@@ -120,9 +97,7 @@ class ChunkManager {
         }
     }
 
-    /*chunkKey(x, y){
-        return `${x}:${y}`;
-    }*/
+    
 }
 
 module.exports = ChunkManager;

@@ -6,27 +6,28 @@ class ChunkDiffSystem {
         this.chunkManager = chunkManager;
     }
 
-    send() {
+    update(context) {
 
-        const dirty =
-            this.chunkManager.getDirtyChunks();
+        const dirtyChunks = this.chunkManager.getDirtyChunks();
+        if (dirtyChunks.length === 0) {
+            return;
+        }
 
-        for (const chunk of dirty) {
+        for (const chunk of dirtyChunks) {
 
-            const key =
-                `${chunk.x}:${chunk.y}`;
+            const key = `${chunk.x}:${chunk.y}`;
+            const packet = {
+                x: chunk.x,
+                y: chunk.y,
+                layers: chunk.layers
+            };
 
-            for (const player of this.players.values()) {
+            for (const player of context.players.values()) {
 
-                if (
-                    player.loadedChunks.has(key)
-                ) {
-
-                    player.socket.emit(
-                        "chunkDiff",
-                        chunk.getData()
-                    );
-                }
+                if (!player.loadedChunks.has(key)) {
+                    continue;
+                }    
+                player.socket.emit("chunkDiff", packet);
             }
 
             chunk.clearDirty();
