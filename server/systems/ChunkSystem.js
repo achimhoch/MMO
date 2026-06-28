@@ -36,6 +36,7 @@ class ChunkSystem {
             player.loadedChunks.add(key);
             const [chunkX, chunkY] = key.split(":").map(Number);
             chunkManager.addReference(chunkX, chunkY);
+            chunkManager.subscribe(player, chunkX, chunkY);
             player.socket.emit("chunkLoad", chunkManager.getChunkData(
                     chunkX,
                     chunkY
@@ -53,6 +54,7 @@ class ChunkSystem {
             }
             player.loadedChunks.delete(key);
             const [chunkX, chunkY] = key.split(":").map(Number);
+            chunkManager.unsubscribe(player, chunkX, chunkY);
             chunkManager.removeReference(
                 chunkX,
                 chunkY

@@ -7,8 +7,7 @@ class ChunkManager {
     constructor(tiledChunkManager) {
         this.generator = tiledChunkManager; 
         this.chunks = new Map();
-        //this.chunkSize = 16;
-        //this.importer = new TiledImporter("../../client/assets/maps/continents/grassland.json");
+        this.subscribers = new Map();
     }
 
     getKey(chunkX, chunkY){
@@ -48,6 +47,11 @@ class ChunkManager {
         }
         chunk.referenceCount--;
         if (chunk.referenceCount > 0){
+            return;
+        }
+
+        const subscribers = this.subscribers.get(key);
+        if (subscribers && subscribers.size > 0) {
             return;
         }
 
@@ -97,7 +101,33 @@ class ChunkManager {
         }
     }
 
-    
+    subscribe(player, chunkX, chunkY) {
+        const key = this.getKey(chunkY, chunkY);
+        let set = this.subscribers.get(key);
+        if(!set) {
+            set = new Set();
+            this.subscribers.set(key, set);
+        }
+
+        set.add(player);
+    }
+
+    unsubscribe(player, chunkX, chunkY) {
+        const key = this.getKey(chunkY, chunkY);
+        const set = this.subscribers.get(key);
+
+        if(!set) {
+            return;
+        }
+        set.delete(player);
+        if (set.size === 0) {
+            this.subscribers.delete(key);
+        }
+    }
+
+    getSubscribers(chunkX, chunkY) {
+        const key = this.getKey()
+    }
 }
 
 module.exports = ChunkManager;

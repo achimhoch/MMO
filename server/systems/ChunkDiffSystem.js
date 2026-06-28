@@ -1,33 +1,23 @@
 class ChunkDiffSystem {
 
-    constructor(players, chunkManager) {
+    constructor() {
 
-        this.players = players;
-        this.chunkManager = chunkManager;
+        
     }
 
     update(context) {
 
-        const dirtyChunks = this.chunkManager.getDirtyChunks();
+        const dirtyChunks = context.chunkManager.getDirtyChunks();
         if (dirtyChunks.length === 0) {
             return;
         }
 
         for (const chunk of dirtyChunks) {
 
-            const key = `${chunk.x}:${chunk.y}`;
-            const packet = {
-                x: chunk.x,
-                y: chunk.y,
-                layers: chunk.layers
-            };
+            const subscribers = context.chunkManager.getSubscribers(chunk.x, chunk.y);
 
-            for (const player of context.players.values()) {
-
-                if (!player.loadedChunks.has(key)) {
-                    continue;
-                }    
-                player.socket.emit("chunkDiff", packet);
+            for (const player of subscribers) {
+                player.socket.emit("chunkDiff", chunk.getData());
             }
 
             chunk.clearDirty();

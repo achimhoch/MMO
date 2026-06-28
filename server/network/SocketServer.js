@@ -54,20 +54,20 @@ class SocketServer {
 
             
 
-        socket.on(
-            "disconnect", () => {
-                for (const key of player.loadedChunks){
-                    const [chunkX, chunkY] = key.split(":").map(Number);
-                    chunkManager.removeReference(chunkX, chunkY);
-                }
+            socket.on("disconnect", () => {
+                    for (const key of player.loadedChunks){
+                        const [chunkX, chunkY] = key.split(":").map(Number);
+                        chunkManager.unsubscribe(player, chunkX, chunkY);
+                        chunkManager.removeReference(chunkX, chunkY);
+                    }
 
-                if (gameLoop.systemManager.get("InterestSystem")) {
-                    gameLoop.systemManager.get("InterestSystem").removePlayer(player);
-                }
-                players.delete(player.id)
-                console.log("Spieler " + socket.id + " getrennt");
-            }
-        );
+                    if (gameLoop.systemManager.get("InterestSystem")) {
+                        gameLoop.systemManager.get("InterestSystem").removePlayer(player);
+                    }
+                    players.delete(player.id)
+                    console.log("Spieler " + socket.id + " getrennt");
+            });
+
             
         });
 
