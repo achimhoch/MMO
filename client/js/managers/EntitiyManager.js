@@ -6,16 +6,25 @@ export default class EntityManager {
 
         this.scene = scene;
         this.players = new Map();
+        this.localPlayerId = null;
+    }
+
+    setLocalPlayer(id) {
+        this.localPlayerId = id;
+    }
+
+    isLocalPlayer(id) {
+        return id === this.localPlayerId;
     }
 
     spawnPlayer(data){
         //console.log(data);
         //console.log(this.players.has(data.id));
         if(this.players.has(data.id)){
-            return;
+            return this.players.get(data.id);
         }
         const player = new PlayerEntity(this.scene, data);
-        this.scene.cameras.main.centerOn(player.x, player.y);
+        player.isLocalPlayer = this.isLocalPlayer(data.id);
         this.players.set(data.id, player);
        //console.log(this.players);
     }
@@ -24,20 +33,32 @@ export default class EntityManager {
         //console.log(data);
         let player = this.players.get(data.id);
         if(!player){
-            this.spawnPlayer(data);
-            player = this.players.get(data.id);
+            player = this.spawnPlayer(data);
         }
         
-        if (data.id === this.localPlayerId) {
+        if (player.islocalPlayer) {
             player.setServerState(data);
             return;
         }
-        player.x = data.x;
-        player.y = data.y;
+        player.setServerState(data);
+        player.resetToServer();
 
-        player.serverX = data.x;
-        player.serverY = data.y;
-        this.scene.cameras.main.centerOn(player.x, player.y);
+        
+    }
+
+    applyDelta(delta) {
+       for (const entity of delta.added) {
+            this.spawnPlayer(entity);
+        } 
+
+        for (const entity of delta.updated) {
+            this.updatePlayer(entity);
+        }
+
+       for (const id of delta.removed) {
+
+            this.removePlayer(id);
+        }
     }
 
     removePlayer(id){
