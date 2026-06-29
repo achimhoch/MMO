@@ -2,11 +2,11 @@ export default class PredictionSystem {
 
     update(context) {
 
-        const player = context.entityManager.getPlayer(
-            context.playerId
-        );
+        const player = context.entityManager.getPlayer(context.playerId);
 
-        if (!player)
+        player.applyInput(context.inputManager.getInput());
+
+        /*if (!player)
             return;
 
         const input = context.inputManager.getInput();
@@ -21,7 +21,7 @@ export default class PredictionSystem {
             player.y -= player.speed;
 
         if (input.down)
-            player.y += player.speed;
+            player.y += player.speed;*/
     }
 
 }

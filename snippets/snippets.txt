@@ -418,3 +418,22 @@ let players = {};*/
         this.entityManager.update();
 
         this.interpolationManager.update();*/
+
+         /*const pos = IsoMath.worldToIso(data.worldX, data.worldY);
+        const sprite = this.scene.add.image(pos.x, pos.y, "player");
+        //console.log(sprite);
+        sprite.setOrigin(0.5, 1);
+        sprite.depth = pos.y + 1;
+        sprite.worldX = data.worldX;
+        sprite.worldY = data.worldY;
+        sprite.targetX = data.worldX;
+        sprite.targetY = data.worldY;
+        //this.scene.cameras.main.startFollow(sprite);*/
+
+         /*const pos = IsoMath.worldToIso(data.worldX, data.worldY);
+        //player.setPosition(pos.x, pos.y);
+        player.depth = pos.y + 1;
+        player.worldX = data.worldX;
+        player.worldY = data.worldY;
+        player.targetX = data.worldX;
+        player.targetY = data.worldY;*/

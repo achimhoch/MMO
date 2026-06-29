@@ -4,7 +4,13 @@ export default class ReconciliationSystem {
 
         const player = context.entityManager.getPlayer(context.playerId);
 
-        if (!player)
+        player.resetToServer();
+
+        for (const command of context.inputManager.getPendingCommands()) {
+            player.applyInput(command.input);
+        }
+
+        /*if (!player)
             return;
 
         //---------------------------------------
@@ -33,7 +39,7 @@ export default class ReconciliationSystem {
 
             if (command.input.down)
                 player.y += player.speed;
-        }
+        }*/
 
     }
 
