@@ -37,9 +37,9 @@ export default class ChunkManager {
         this.chunks.delete(key);
     }
 
-    updateChunk(chunk) {
-        this.unloadChunk(chunk.x, chunk.y);
-        this.loadChunk(chunk);
+    updateChunk(diff) {
+        this.unloadChunk(diff);
+        this.loadChunk(diff);
     }
 
     

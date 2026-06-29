@@ -1,18 +1,11 @@
 import NetworkManager from "../managers/NetworkManager.js";
 import ChunkManager from "../managers/ChunkManager.js";
 import EntityManager from "../managers/EntitiyManager.js";
-import InputManager from "../managers/InputManager.js";
-import PredictionManager from "../managers/PredictionManager.js";
-import InterpolationManager from "../managers/InterpolationManager.js";
-
-
-const socket = io();
-const TILE_W = 64;
-const TILE_H = 32;
-const CHUNK_SIZE = 16;
-const VIEW_DISTANCE = 1;
-let myId;
-let players = {};
+import ClientSystemManager from "../core/ClientSystemManager.js";
+import ClientContext from "../core/ClientContext.js";
+import Inputsystem from "../systems/InputSystem.js";
+import CameraSystem from "../systems/CameraSystem.js";
+import NetworkSystem from "../systems/NetworkSystem.js";
 
 export default class WorldScene extends Phaser.Scene {
     constructor() {
@@ -20,45 +13,19 @@ export default class WorldScene extends Phaser.Scene {
     }
 
     create() {
-        this.cameras.main.setZoom(1.5);
-        this.inputManager = new InputManager(this);
-        this.predictionManager = new PredictionManager(this);
-        this.interpolationManager = new InterpolationManager(this);
-        this.entityManager = new EntityManager(this);
-        this.chunkManager = new ChunkManager(this);
-        this.network = new NetworkManager(this);
-        this.network.connect();
-        this.cursors = this.input.keyboard.createCursorKeys(); 
+       this.context = new ClientContext(this);
+       this.context.entityManager = new EntityManager(this);
+       this.context.chunkManager = new ChunkManager(this);
+       this.context.network = new NetworkManager(this.context);
+       this.systemManager = new ClientSystemManager(); 
        
+       this.systemManager.add(new Inputsystem(), 100);
+       this.systemManager.add(new CameraSystem(), 200);
+       this.systemManager.add(new NetworkSystem(), 300);
     }
 
     update() {
-
-        /*const input = {
-            left: this.cursors.left.isDown,
-            right: this.cursors.right.isDown,
-            up: this.cursors.up.isDown,
-            down: this.cursors.down.isDown,
-        };*/
-
-        const input = this.inputManager.createInput();
-
-        this.network.sendInput({
-            input
-        });
-
-        const localPlayer = this.entityManager.getPlayer(socket.id);
-        if (localPlayer) {
-            this.predictionManager.applyLocalInput(
-                localPlayer,
-                input
-            )
-        }
-
-        this.entityManager.update();
-
-        this.interpolationManager.update();
-       
+        this.systemManager.update(this.context);
     }
 
 }

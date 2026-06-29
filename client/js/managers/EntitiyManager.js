@@ -65,4 +65,18 @@ export default class EntityManager {
     update() {
 
     }
+
+    applyDelta(delta) {
+        delta.added.forEach((entity) => {
+            this.spawnPlayer(entity);
+        });
+
+        delta.updated.forEach((entity) => {
+            this.updatePlayer(entity);
+        });
+
+        delta.removed.forEach((id) => {
+            this.removePlayer(id);
+        });
+    }
 }
