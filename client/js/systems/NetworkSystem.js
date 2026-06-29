@@ -18,16 +18,12 @@ export default class NetworkSystem {
 
         const inputManager = context.inputManager;
 
-        if (inputManager.hasChanged()) {
+        if (!inputManager.hasChanged()) return;
 
-            network.sendInput(
+        network.sendInput(inputManager.getCommand());
 
-                inputManager.getCommand()
-
-            );
-
-            inputManager.commit();
-        }
+        inputManager.commit();
+        
 
         //------------------------------------------
         // Weitere Nachrichten könnten hier folgen

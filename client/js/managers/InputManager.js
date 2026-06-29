@@ -1,3 +1,6 @@
+import InputCommand from "../input/InputCommand.js";
+import InputHistory from "../input/InputHistory.js"; 
+
 export default class InputManager {
 
     constructor(scene) {
@@ -5,6 +8,7 @@ export default class InputManager {
         this.scene = scene;
         this.sequence = 0;
         this.pendingInputs = [];
+        this.history = new InputHistory();
         this.keys = scene.input.keyboard.addKeys({
             up: "W",
             down: "S",
@@ -57,10 +61,20 @@ export default class InputManager {
     }
 
     getCommand() {
-        return {
-            sequence: this.sequence,
-            input: {...this.input}
-        };
+        const command = new InputCommand(
+            ++this.sequence,
+            this.input
+        );
+        this.history.add(command);
+        return command;
+    }
+
+    acknoeledge(sequence) {
+        this.history.acknowledge(sequence);
+    }
+
+    getPendingCommands() {
+        return this.history.getPending();
     }
 
     nextSequence(){

@@ -6,6 +6,9 @@ import ClientContext from "../core/ClientContext.js";
 import Inputsystem from "../systems/InputSystem.js";
 import CameraSystem from "../systems/CameraSystem.js";
 import NetworkSystem from "../systems/NetworkSystem.js";
+import PredictionSystem from "../systems/PredictionSystem.js";
+import ReconciliationSystem from "../systems/ReconciliationSystem.js";
+import RenderSystem from "../systems/RenderSystem.js";
 
 export default class WorldScene extends Phaser.Scene {
     constructor() {
@@ -20,8 +23,10 @@ export default class WorldScene extends Phaser.Scene {
        this.systemManager = new ClientSystemManager(); 
        
        this.systemManager.add(new Inputsystem(), 100);
-       this.systemManager.add(new CameraSystem(), 200);
+       this.systemManager.add(new PredictionSystem(), 200);
        this.systemManager.add(new NetworkSystem(), 300);
+       this.systemManager.add(new ReconciliationSystem(), 400);
+       this.systemManager.add(new RenderSystem(), 500);
     }
 
     update() {
