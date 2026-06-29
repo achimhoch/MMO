@@ -1,5 +1,5 @@
 import IsoMath from "../util/IsoMath.js";
-import WorldConfig from "../../../shared/config.js";
+import { TILE_WIDTH, TILE_HEIGHT, CHUNK_SIZE } from "../../shared/config.js";
 
 export default class ChunkRenderer {
     constructor(scene) {
@@ -13,12 +13,12 @@ export default class ChunkRenderer {
         chunk.layers.ground.forEach((tile, index) => {
            //console.log(tile, index);
             if (tile !== 0) {
-                const x = index % WorldConfig.CHUNK_SIZE;
-                const y = Math.floor(index / WorldConfig.CHUNK_SIZE);
-                const tileX = chunk.x * WorldConfig.CHUNK_SIZE + x;
-                const tileY = chunk.y * WorldConfig.CHUNK_SIZE + y;
-                const worldX = tileX * WorldConfig.TILE_WIDTH;
-                const worldY = tileY * WorldConfig.TILE_HEIGHT;
+                const x = index % CHUNK_SIZE;
+                const y = Math.floor(index / CHUNK_SIZE);
+                const tileX = chunk.x * CHUNK_SIZE + x;
+                const tileY = chunk.y * CHUNK_SIZE + y;
+                const worldX = tileX * TILE_WIDTH;
+                const worldY = tileY * TILE_HEIGHT;
                 const pos = IsoMath.worldToIso(worldX , worldY); 
                 //console.log(pos);
                 const ground = this.scene.add.sprite(pos.x, pos.y, 'tiles', tile - 1);
@@ -31,12 +31,12 @@ export default class ChunkRenderer {
 
         chunk.layers.objects.forEach((obTile, obIndex) => {
             if (tile !== 0) {
-                const x = obIndex % WorldConfig.CHUNK_SIZE;
-                const y = Math.floor(obIndex / WorldConfig.CHUNK_SIZE);
-                const obTileX = chunk.x * WorldConfig.CHUNK_SIZE + x;
-                const obTileY = chunk.y * WorldConfig.CHUNK_SIZE + y;
-                const worldX = obTileX * WorldConfig.TILE_WIDTH;
-                const worldY = obTileY * WorldConfig.TILE_HEIGHT;
+                const x = obIndex % CHUNK_SIZE;
+                const y = Math.floor(obIndex / CHUNK_SIZE);
+                const obTileX = chunk.x * CHUNK_SIZE + x;
+                const obTileY = chunk.y * CHUNK_SIZE + y;
+                const worldX = obTileX * TILE_WIDTH;
+                const worldY = obTileY * TILE_HEIGHT;
                 const obPos = IsoMath.worldToIso(worldX, worldY);
                 const objects = this.scene.add.sprite(obPos.x, obPos.y, 'tiles', tile - 1);
                 objects.depth = obPos.y + 150 + obPos.x;

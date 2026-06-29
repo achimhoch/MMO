@@ -10,11 +10,11 @@ export default class IsoMath {
 
             /*x:
                 (x - y) *
-                (this.TILE_W / 2),
+                (64 / 2),
 
             y:
                 (x + y) *
-                (this.TILE_H / 2)*/
+                (32 / 2)*/
         };
     }
 

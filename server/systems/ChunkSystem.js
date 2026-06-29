@@ -1,31 +1,26 @@
+const WorldConfig = require("../../shared/WorldConfig");
+
 class ChunkSystem {
 
-    constructor(chunkManager, viewRadius = 1) {
+    constructor() {
 
-        this.chunkManager = chunkManager;
-        this.viewRadius = viewRadius;
+        this.viewRadius = WorldConfig.VIEW_RADIUS;
     }
 
+
     /**
-     * Liefert alle Chunks, die für den Spieler sichtbar sein sollen.
+     * Wird vom SystemManger einmal pro Tick audgerufen
      */
-    getVisibleChunkKeys(player) {
-
-        const visible = new Set();
-
-        for (let y = player.chunkY - this.viewRadius; y <= player.chunkY + this.viewRadius; y++) {
-            for (let x = player.chunkX - this.viewRadius; x <= player.chunkX + this.viewRadius; x++) {
-                visible.add(`${x}:${y}`);
-            }
+    update(context) {
+        for (const player of context.players.values()) {
+            this.updatePlayer(player, context.chunkManager);
         }
-
-        return visible;
     }
 
     /**
      * Synchronisiert die geladenen Chunks des Spielers.
      */
-    update(player) {
+    updatePlayer(player, chunkManager) {
 
         const visibleChunks = this.getVisibleChunkKeys(player);
 
@@ -40,8 +35,8 @@ class ChunkSystem {
             }
             player.loadedChunks.add(key);
             const [chunkX, chunkY] = key.split(":").map(Number);
-            this.chunkManager.addReference(chunkX, chunkY);
-            player.socket.emit("chunkLoad", this.chunkManager.getChunkData(
+            chunkManager.addReference(chunkX, chunkY);
+            player.socket.emit("chunkLoad", chunkManager.getChunkData(
                     chunkX,
                     chunkY
                 )
@@ -58,7 +53,7 @@ class ChunkSystem {
             }
             player.loadedChunks.delete(key);
             const [chunkX, chunkY] = key.split(":").map(Number);
-            this.chunkManager.removeReference(
+            chunkManager.removeReference(
                 chunkX,
                 chunkY
             );
@@ -67,6 +62,26 @@ class ChunkSystem {
                     chunkY
             });
         }
+    }
+
+    /**
+     * Liefert alle Chunks, die für den Spieler sichtbar sein sollen.
+     */
+    getVisibleChunkKeys(player) {
+
+        const visible = new Set();
+        const minX = player.chunkX - this.viewRadius;
+        const maxX = player.chunkX + this.viewRadius;
+        const minY = player.chunkY - this.viewRadius;
+        const maxY = player.chunkY + this.viewRadius;
+
+        for (let y = minY; y <= maxY; y++) {
+            for (let x = minX; x <= maxX; x++) {
+                visible.add(`${x}:${y}`);
+            }
+        }
+
+        return visible;
     }
 }
 
