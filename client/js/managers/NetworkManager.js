@@ -4,9 +4,26 @@ export default class NetworkManager {
 
     constructor(context) {
 
-        context.socket = io();
-        registerSocketEvents(context)
+        this.socket = io();
+        this.connected = false;
+        this.context = context;
+        context.socket = this.socket;
+      
+        this.socket.on("connect", () => {
+            this.connected = true;
+        })
+
+        this.socket.on("disconnect", () => {
+            this.connected = false;
+        });
+
+          registerSocketEvents(context);
     }
+
+    isConnected() {
+        return this.connected;
+    }
+
 
     sendInput(input){
 
@@ -21,5 +38,9 @@ export default class NetworkManager {
             input,
             sequence
         }); 
+    }
+
+    emit(event, data) {
+        this.socket.emit(event, data);
     }
 }

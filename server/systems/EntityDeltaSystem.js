@@ -89,7 +89,7 @@ class EntityDeltaSystem {
         return {
 
             tick: this.tick,
-
+            sequence: player.inputSequence,
             added,
             updated,
             removed

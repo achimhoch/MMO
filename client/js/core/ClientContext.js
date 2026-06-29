@@ -13,6 +13,8 @@ export default class ClientContext {
         this.cameraManager = null;
 
         this.tick = 0;
+
+        this.lastServerSequence = 0;
     }
 
 }

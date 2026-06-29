@@ -34,13 +34,32 @@ export default class InputManager {
         this.input.right = this.keys.right.isDown;
     }
 
-    createInput(){
+    getInput(){
 
+        return this.input;
+    }
+
+    hasChanged() {
+         return (
+            this.input.up !== this.lastInput.up ||
+            this.input.down !== this.lastInput.down ||
+            this.input.left !== this.lastInput.left ||
+            this.input.right !== this.lastInput.right
+        );
+    }
+
+    commit() {
+        this.lastInput = {
+            ...this.input
+        };
+
+        this.sequence++;
+    }
+
+    getCommand() {
         return {
-            left: this.scene.cursors.left.isDown,
-            right: this.scene.cursors.right.isDown,
-            up: this.scene.cursors.up.isDown,
-            down: this.scene.cursors.down.isDown
+            sequence: this.sequence,
+            input: {...this.input}
         };
     }
 

@@ -47,8 +47,9 @@ class SocketServer {
                 if (!Player) {
                     return;
                 }
-                Player.lastProcessedInput = data.sequence;
+                //Player.lastProcessedInput = data.sequence;
                 Player.input = data.input;
+                player.inputSequence = data.sequence;
                
             });
 

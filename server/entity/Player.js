@@ -25,7 +25,8 @@ class Player {
         this.visibleEntities = new Set();
         this.connectedAt = Date.now();
         this.lastProcessedTick = 0;
-        this.lastInputSequence = 0;
+        //this.lastInputSequence = 0;
+        this.inputSequence = 0;
         this.ping = 0;
         this.lastProcessedInput = 0;
     }

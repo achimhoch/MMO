@@ -10,6 +10,7 @@ export default function registerSocketEvents(context) {
 
     socket.on("entityDelta", delta => {
 
+        context.lastServerSequence = delta.sequence;
         context.entityManager.applyDelta(delta);
 
     });
